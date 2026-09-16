@@ -17,6 +17,8 @@ h1{margin:0;font-size:30px;letter-spacing:-1px}.sub{color:#8491a3;margin:5px 0 1
 .login input{width:100%;padding:13px;margin-top:10px;border:0;border-radius:12px;background:#202936;color:white;font-size:16px}
 button{border:0;border-radius:13px;padding:13px 16px;font-size:15px;font-weight:650;cursor:pointer}
 .login button{width:100%;margin-top:11px;background:#fff;color:#111}
+.resetWrap{text-align:right;margin-top:10px}
+.resetBtn{background:transparent;color:#7f8b9a;padding:5px 2px;font-size:11px;font-weight:500}
 .master{display:grid;grid-template-columns:1fr 1fr;gap:10px}.master button:first-child{background:#fff}.master button:last-child{background:#343d49;color:#fff}
 .room{display:flex;align-items:center;justify-content:space-between;transition:.2s}.room.on{background:linear-gradient(145deg,#f8e8a8,#ffd95d);color:#171717}
 .name{font-size:18px;font-weight:700}.id{font-size:11px;opacity:.55;margin-top:3px}
@@ -35,10 +37,14 @@ button{border:0;border-radius:13px;padding:13px 16px;font-size:15px;font-weight:
   </div>
 
   <div id="login" class="card login">
-    <b>외부 접속</b>
-    <div class="small">HiveMQ의 conyweb 계정 비밀번호를 입력하세요.</div>
-    <input id="pw" type="password" placeholder="conyweb 비밀번호">
-    <button onclick="connectCloud()">연결</button>
+    <b>최초 연결 설정</b>
+    <div class="small">처음 한 번만 conyweb 비밀번호를 입력하면 이 브라우저에 저장되어 다음부터 자동 연결됩니다.</div>
+    <input id="pw" type="password" placeholder="conyweb 비밀번호" autocomplete="current-password">
+    <button onclick="connectCloud(false)">저장하고 연결</button>
+  </div>
+
+  <div class="resetWrap">
+    <button class="resetBtn" onclick="resetSavedPassword()">MQTT 비밀번호 초기화</button>
   </div>
 
   <div class="card master">
@@ -71,40 +77,125 @@ function render(){
  document.getElementById('rooms').innerHTML=h;
 }
 function toast(s){let t=document.getElementById('toast');t.textContent=s;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1700)}
-function connectCloud(){
- const pw=document.getElementById('pw').value;
+const STORAGE_KEY='conyhome_mqtt_password';
+
+function startMqtt(pw, savePassword){
  if(!pw){toast('비밀번호를 입력하세요');return}
+
  if(client) try{client.end(true)}catch(e){}
+
+ document.getElementById('conn').textContent='HiveMQ Cloud 연결 중...';
+
  const url=`wss://${HOST}:${PORT}/mqtt`;
+
  client=mqtt.connect(url,{
-   username:USER,password:pw,
+   username:USER,
+   password:pw,
    clientId:'ConyWeb-'+Math.random().toString(16).slice(2),
-   clean:true,connectTimeout:10000,reconnectPeriod:3000
+   clean:true,
+   connectTimeout:10000,
+   reconnectPeriod:3000
  });
+
+ let firstConnect=true;
+
  client.on('connect',()=>{
    document.getElementById('dot').classList.add('on');
    document.getElementById('conn').textContent='HiveMQ Cloud 연결됨';
    document.getElementById('login').style.display='none';
+
+   if(savePassword){
+     try{localStorage.setItem(STORAGE_KEY,pw)}catch(e){}
+   }
+
    client.subscribe('conyhome/light/+/state');
    client.subscribe('conyhome/device/status');
-   toast('외부 연결 성공');
+
+   if(firstConnect){
+     toast(savePassword ? '비밀번호 저장 · 외부 연결 성공' : '자동 연결 성공');
+     firstConnect=false;
+   }
  });
- client.on('reconnect',()=>{document.getElementById('conn').textContent='HiveMQ 재연결 중...'});
- client.on('close',()=>{document.getElementById('dot').classList.remove('on')});
- client.on('error',(e)=>{document.getElementById('conn').textContent='연결 실패';toast('계정/비밀번호를 확인하세요')});
+
+ client.on('reconnect',()=>{
+   document.getElementById('conn').textContent='HiveMQ 재연결 중...';
+ });
+
+ client.on('close',()=>{
+   document.getElementById('dot').classList.remove('on');
+ });
+
+ client.on('error',(e)=>{
+   document.getElementById('conn').textContent='연결 실패';
+
+   // 저장된 비밀번호가 틀렸거나 변경된 경우 자동 로그인 반복을 막고 다시 입력받음.
+   if(!savePassword){
+     try{localStorage.removeItem(STORAGE_KEY)}catch(err){}
+     document.getElementById('login').style.display='block';
+     document.getElementById('pw').value='';
+     toast('저장된 비밀번호를 다시 입력하세요');
+     try{client.end(true)}catch(err){}
+   }else{
+     toast('계정/비밀번호를 확인하세요');
+   }
+ });
+
  client.on('message',(topic,payload)=>{
    const msg=payload.toString().trim().toUpperCase();
+
    if(topic==='conyhome/device/status'){
      document.getElementById('device').textContent='ESP8266 : '+msg;
      return;
    }
+
    const m=topic.match(/^conyhome\/light\/(\d\d)\/state$/);
+
    if(m){
      const i=parseInt(m[1],10)-1;
-     if(i>=0&&i<5){states[i]=(msg==='ON');render();}
+     if(i>=0&&i<5){
+       states[i]=(msg==='ON');
+       render();
+     }
    }
  });
 }
+
+function connectCloud(auto=false){
+ let pw='';
+
+ if(auto){
+   try{pw=localStorage.getItem(STORAGE_KEY)||''}catch(e){}
+   if(!pw){
+     document.getElementById('login').style.display='block';
+     return;
+   }
+   startMqtt(pw,false);
+   return;
+ }
+
+ pw=document.getElementById('pw').value;
+ startMqtt(pw,true);
+}
+
+function resetSavedPassword(){
+ try{localStorage.removeItem(STORAGE_KEY)}catch(e){}
+
+ if(client){
+   try{client.end(true)}catch(e){}
+   client=null;
+ }
+
+ document.getElementById('dot').classList.remove('on');
+ document.getElementById('conn').textContent='HiveMQ 연결 안 됨';
+ document.getElementById('device').textContent='ESP8266 상태 확인 전';
+ document.getElementById('login').style.display='block';
+ document.getElementById('pw').value='';
+ toast('저장된 MQTT 비밀번호를 초기화했습니다');
+}
+
+window.addEventListener('load',()=>{
+ connectCloud(true);
+});
 function send(i,state){
  if(!client||!client.connected){toast('먼저 Cloud에 연결하세요');return}
  const id=String(i+1).padStart(2,'0');
