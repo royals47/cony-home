@@ -6,455 +6,70 @@
 <meta name="theme-color" content="#0d1016">
 <title>Cony Home</title>
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
-
 <style>
-:root{
-  --bg:#0d1016;
-  --card:#171c26;
-  --line:#293141;
-  --text:#f4f6fa;
-  --muted:#929bab;
-  --yellow:#ffd85b;
-  --green:#31d47b;
-}
+:root{--bg:#0d1016;--card:#171c26;--line:#293141;--text:#f4f6fa;--muted:#929bab;--yellow:#ffd85b;--green:#31d47b}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{
-  margin:0;min-height:100%;
-  background:var(--bg);color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans KR",sans-serif;
-}
-.wrap{max-width:720px;margin:0 auto;padding:32px 20px 70px}
-.header{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}
-h1{margin:0;font-size:42px;line-height:1.05;letter-spacing:-1.6px;font-weight:800}
-.sub{margin-top:10px;color:var(--muted);font-size:19px}
-.cloudBadge{
-  margin-top:3px;padding:8px 12px;border-radius:999px;
-  color:#cbd3df;background:#161c25;border:1px solid #293141;
-  font-size:12px;font-weight:700;
-}
-.card{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:28px;
-  box-shadow:0 10px 30px rgba(0,0,0,.14);
-}
-.statusCard{margin-top:28px;padding:23px 24px}
-.statusTop{display:flex;align-items:center;gap:12px}
-.dot{width:12px;height:12px;border-radius:50%;background:#68717f}
-.dot.on{background:var(--green);box-shadow:0 0 14px rgba(49,212,123,.7)}
-.conn{font-size:21px;font-weight:750}
-.device{margin-top:8px;margin-left:24px;color:var(--muted);font-size:14px}
-.statusLine{
-  margin-top:16px;padding-top:15px;border-top:1px solid #252c38;
-  display:flex;gap:8px;flex-wrap:wrap;
-}
-.pill{padding:7px 10px;border-radius:999px;background:#222a37;color:#aeb7c6;font-size:12px}
-.pill.good{color:#aef2ca;background:rgba(49,212,123,.10)}
-
-.login{margin-top:16px;padding:22px}
-.loginTitle{font-size:18px;font-weight:750}
-.loginText{margin-top:6px;color:var(--muted);font-size:13px;line-height:1.55}
-.loginRow{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:14px}
-.login input{
-  min-width:0;border:1px solid #354052;background:#0f131a;color:#fff;
-  border-radius:16px;padding:14px 15px;font-size:16px;outline:none;
-}
-.login button{
-  border:0;border-radius:16px;padding:0 18px;background:#fff;color:#111;
-  font-size:15px;font-weight:750;
-}
-.resetWrap{text-align:right;margin:11px 4px 0}
-.resetBtn{border:0;background:transparent;color:#7f8998;font-size:12px;padding:6px;cursor:pointer}
-
-.master{
-  margin-top:18px;padding:20px;
-  display:grid;grid-template-columns:1fr 1fr;gap:16px;
-}
-button.control{
-  border:0;border-radius:20px;padding:20px 12px;
-  font-size:19px;font-weight:800;cursor:pointer;
-}
-.allOn{background:var(--yellow);color:#171717}
-.allOff{background:#303847;color:#fff}
-
-.sectionTitle{
-  display:flex;align-items:center;justify-content:space-between;
-  margin:28px 2px 12px;
-}
-.sectionTitle b{font-size:18px}
-.sectionTitle span{font-size:12px;color:#778295}
-
-.room{padding:22px;margin-top:14px;transition:.18s ease}
-.room.on{border-color:#665726;background:#1c1e1d}
-.roomMain{display:flex;align-items:center;justify-content:space-between;gap:18px}
-.roomName{font-size:27px;font-weight:800;letter-spacing:-.5px}
-.roomInfo{margin-top:5px;color:var(--muted);font-size:14px}
-.stateBox{display:flex;align-items:center;gap:12px}
-.stateText{font-size:13px;font-weight:750;color:#8c96a6;min-width:30px;text-align:right}
-.room.on .stateText{color:#ffe993}
-.switch{
-  width:64px;height:38px;border-radius:24px;background:#303847;
-  position:relative;cursor:pointer;transition:.2s;
-}
-.knob{
-  position:absolute;width:30px;height:30px;left:4px;top:4px;
-  border-radius:50%;background:#fff;transition:.2s;
-}
-.room.on .switch{background:var(--yellow)}
-.room.on .knob{left:30px;background:#171717}
-
-.note{margin:22px 3px 0;color:#6f7a8b;font-size:12px;line-height:1.65}
-.footer{
-  margin-top:30px;padding-top:18px;border-top:1px solid #1e2530;
-  color:#657082;font-size:11px;text-align:center;
-}
-#toast{
-  position:fixed;left:50%;bottom:24px;transform:translateX(-50%);
-  background:#050608;border:1px solid #282e39;color:#fff;
-  padding:11px 17px;border-radius:22px;opacity:0;transition:.2s;
-  pointer-events:none;white-space:nowrap;z-index:10;
-}
-#toast.show{opacity:.95}
-
-@media(max-width:560px){
-  .wrap{padding:28px 14px 60px}
-  h1{font-size:37px}
-  .sub{font-size:17px}
-  .cloudBadge{font-size:11px;padding:7px 9px}
-  .statusCard{padding:20px}
-  .conn{font-size:19px}
-  .master{gap:12px;padding:16px}
-  button.control{font-size:17px;padding:18px 10px}
-  .room{padding:20px}
-  .roomName{font-size:25px}
-  .loginRow{grid-template-columns:1fr}
-  .login button{padding:14px}
-}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif}
+.wrap{max-width:720px;margin:auto;padding:28px 14px 65px}
+.head{display:flex;justify-content:space-between;align-items:flex-start}.title{font-size:37px;font-weight:850;letter-spacing:-1.5px}.sub{margin-top:7px;color:var(--muted);font-size:16px}.badge{padding:7px 9px;border:1px solid var(--line);border-radius:99px;color:#aeb7c6;font-size:11px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:25px}
+.status{margin-top:25px;padding:20px}.statusTop{display:flex;gap:11px;align-items:center}.dot{width:11px;height:11px;border-radius:50%;background:#6b7481}.dot.on{background:var(--green);box-shadow:0 0 12px rgba(49,212,123,.65)}.conn{font-size:19px;font-weight:800}.device{margin:7px 0 0 22px;color:var(--muted);font-size:13px}.pills{display:flex;gap:7px;flex-wrap:wrap;margin-top:15px;padding-top:14px;border-top:1px solid #252c38}.pill{padding:6px 9px;border-radius:99px;background:#222a37;color:#aeb7c6;font-size:11px}.pill.good{color:#aef2ca;background:rgba(49,212,123,.10)}
+.login{margin-top:14px;padding:18px}.login input{width:100%;background:#0f131a;border:1px solid #354052;border-radius:14px;color:#fff;padding:13px;font-size:15px}.login button{margin-top:9px;width:100%;border:0;border-radius:14px;padding:13px;font-weight:800}
+.reset{text-align:right;margin:7px 3px}.reset button{border:0;background:transparent;color:#7f8998;font-size:11px}
+.master{margin-top:14px;padding:15px;display:grid;grid-template-columns:1fr 1fr;gap:10px}.master button{border:0;border-radius:17px;padding:16px 8px;font-size:16px;font-weight:850}.onBtn{background:var(--yellow)}.offBtn{background:#303847;color:#fff}
+.groupTitle{font-size:20px;font-weight:850;margin:25px 3px 9px}.item{padding:18px;margin-top:9px}.row{display:flex;align-items:center;justify-content:space-between;gap:15px}.name{font-size:21px;font-weight:800}.info{margin-top:4px;color:var(--muted);font-size:12px}.stateBox{display:flex;gap:8px;align-items:center}.st{font-size:12px;color:#8d97a7;font-weight:800;min-width:31px;text-align:right}.sw{width:59px;height:35px;border-radius:22px;background:#303847;position:relative}.kn{position:absolute;left:4px;top:4px;width:27px;height:27px;border-radius:50%;background:#fff;transition:.2s}.item.on{border-color:#675827;background:#1c1e1d}.item.on .sw{background:var(--yellow)}.item.on .kn{left:28px;background:#171717}.item.on .st{color:#ffe993}
+.note{margin-top:24px;color:#6f7a8b;font-size:11px;line-height:1.65}.footer{margin-top:27px;padding-top:17px;border-top:1px solid #1e2530;text-align:center;color:#657082;font-size:10px}
+#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#050608;color:#fff;padding:10px 15px;border-radius:20px;opacity:0;transition:.2s;pointer-events:none;white-space:nowrap}#toast.show{opacity:.95}
 </style>
 </head>
-
 <body>
 <div class="wrap">
+ <div class="head"><div><div class="title">Cony Home</div><div class="sub">Cloud Remote Control · 11 Circuits</div></div><div class="badge">EXTERNAL</div></div>
 
-  <div class="header">
-    <div>
-      <h1>Cony Home</h1>
-      <div class="sub">Cloud Remote Control</div>
-    </div>
-    <div class="cloudBadge">EXTERNAL</div>
-  </div>
+ <div class="card status">
+  <div class="statusTop"><div id="dot" class="dot"></div><div id="conn" class="conn">HiveMQ 연결 확인 중</div></div>
+  <div id="device" class="device">D1 mini 상태 확인 전</div>
+  <div class="pills"><div id="mqttPill" class="pill">MQTT 대기</div><div id="devPill" class="pill">D1 mini 확인 중</div><div id="rsPill" class="pill">RS485 확인 중</div></div>
+ </div>
 
-  <div class="card statusCard">
-    <div class="statusTop">
-      <div id="dot" class="dot"></div>
-      <div id="conn" class="conn">HiveMQ Cloud 연결 확인 중</div>
-    </div>
+ <div id="login" class="card login">
+  <input id="pw" type="password" placeholder="conyweb MQTT 비밀번호">
+  <button onclick="connectCloud(false)">저장하고 연결</button>
+ </div>
+ <div class="reset"><button onclick="resetSavedPassword()">MQTT 비밀번호 초기화</button></div>
 
-    <div id="device" class="device">D1 mini 상태 확인 전</div>
+ <div class="card master">
+  <button class="onBtn" onclick="groupSet('lights','ON')">조명 전체 켜기</button>
+  <button class="offBtn" onclick="groupSet('lights','OFF')">조명 전체 끄기</button>
+ </div>
 
-    <div class="statusLine">
-      <div id="mqttPill" class="pill">MQTT 대기</div>
-      <div id="devicePill" class="pill">DEVICE 확인 중</div>
-      <div class="pill">GitHub Pages</div>
-    </div>
-  </div>
-
-  <div id="login" class="card login">
-    <div class="loginTitle">MQTT 최초 연결</div>
-    <div class="loginText">
-      conyweb 비밀번호는 이 브라우저에만 저장됩니다.
-      처음 한 번 입력하면 다음부터 자동 연결합니다.
-    </div>
-
-    <div class="loginRow">
-      <input id="pw" type="password" placeholder="conyweb 비밀번호" autocomplete="current-password">
-      <button onclick="connectCloud(false)">저장하고 연결</button>
-    </div>
-  </div>
-
-  <div class="resetWrap">
-    <button class="resetBtn" onclick="resetSavedPassword()">MQTT 비밀번호 초기화</button>
-  </div>
-
-  <div class="card master">
-    <button class="control allOn" onclick="setAll('ON')">전체 켜기</button>
-    <button class="control allOff" onclick="setAll('OFF')">전체 끄기</button>
-  </div>
-
-  <div class="sectionTitle">
-    <b>조명</b>
-    <span>외부 MQTT 제어</span>
-  </div>
-
-  <!-- 방 목록은 아래 JavaScript가 정확히 5개만 생성 -->
-  <div id="rooms"></div>
-
-  <div class="note">
-    이 페이지는 집 내부 IP에 직접 접속하지 않습니다.
-    인터넷 → HiveMQ Cloud → D1 mini 순서로 제어합니다.
-    실제 BESTIN RS485 송신은 D1 mini의 RS485 기능을 연결한 뒤 활성화됩니다.
-  </div>
-
-  <div class="footer">Cony Home · D1 mini V4 · HiveMQ Cloud</div>
+ <div id="list"></div>
+ <div class="note">조명 전체 버튼은 9개 조명만 제어하며 콘센트는 포함하지 않습니다. 표시 상태는 D1 mini가 BESTIN RS485에서 확인한 실제 상태를 MQTT로 전달받아 갱신합니다.</div>
+ <div class="footer">Cony Home · LOLIN D1 mini V4 · HiveMQ Cloud · BESTIN RS485</div>
 </div>
-
 <div id="toast"></div>
 
 <script>
-const HOST='261a8b00b16742908419be0277c596e9.s1.eu.hivemq.cloud';
-const PORT=8884;
-const USER='conyweb';
-const STORAGE_KEY='conyhome_mqtt_password';
-
-// ★ 방은 정확히 5개
-const names=['거실','주방','방1','방2','방3'];
-let states=[false,false,false,false,false];
-
-let client=null;
-let deviceOnline=false;
-
-function toast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg;
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),1700);
-}
-
-function render(){
-  let html='';
-
-  for(let i=0;i<5;i++){
-    const id=String(i+1).padStart(2,'0');
-
-    html+=`
-      <div class="card room ${states[i]?'on':''}">
-        <div class="roomMain">
-          <div>
-            <div class="roomName">${names[i]}</div>
-            <div class="roomInfo">RS485 ID ${id} · ${states[i]?'켜짐':'꺼짐'}</div>
-          </div>
-
-          <div class="stateBox">
-            <div class="stateText">${states[i]?'ON':'OFF'}</div>
-
-            <div class="switch"
-                 onclick="toggle(${i})"
-                 role="button"
-                 aria-label="${names[i]} 전원 전환">
-              <div class="knob"></div>
-            </div>
-          </div>
-        </div>
-      </div>`;
-  }
-
-  // 매번 전체를 교체하므로 중복 생성되지 않음
-  document.getElementById('rooms').innerHTML=html;
-}
-
-function updateConnectionUI(mqttOn){
-  const dot=document.getElementById('dot');
-  const mqttPill=document.getElementById('mqttPill');
-
-  if(mqttOn){
-    dot.classList.add('on');
-    mqttPill.textContent='MQTT 연결됨';
-    mqttPill.classList.add('good');
-  }else{
-    dot.classList.remove('on');
-    mqttPill.textContent='MQTT 대기';
-    mqttPill.classList.remove('good');
-  }
-}
-
-function updateDeviceUI(){
-  const pill=document.getElementById('devicePill');
-
-  if(deviceOnline){
-    pill.textContent='D1 mini ONLINE';
-    pill.classList.add('good');
-    document.getElementById('device').textContent='D1 mini · ONLINE';
-  }else{
-    pill.textContent='D1 mini 확인 중';
-    pill.classList.remove('good');
-    document.getElementById('device').textContent='D1 mini 상태 확인 전';
-  }
-}
-
-function startMqtt(pw,savePassword){
-  if(!pw){
-    toast('비밀번호를 입력하세요');
-    return;
-  }
-
-  if(client){
-    try{client.end(true)}catch(e){}
-    client=null;
-  }
-
-  document.getElementById('conn').textContent='HiveMQ Cloud 연결 중...';
-  updateConnectionUI(false);
-
-  const url=`wss://${HOST}:${PORT}/mqtt`;
-
-  client=mqtt.connect(url,{
-    username:USER,
-    password:pw,
-    clientId:'ConyWeb-'+Math.random().toString(16).slice(2),
-    clean:true,
-    connectTimeout:10000,
-    reconnectPeriod:3000
-  });
-
-  let firstConnect=true;
-
-  client.on('connect',()=>{
-    document.getElementById('conn').textContent='HiveMQ Cloud 연결됨';
-    updateConnectionUI(true);
-    document.getElementById('login').style.display='none';
-
-    if(savePassword){
-      try{localStorage.setItem(STORAGE_KEY,pw)}catch(e){}
-    }
-
-    client.subscribe('conyhome/light/+/state');
-    client.subscribe('conyhome/device/status');
-
-    if(firstConnect){
-      toast(savePassword ? '비밀번호 저장 · 외부 연결 성공' : '자동 연결 성공');
-      firstConnect=false;
-    }
-  });
-
-  client.on('reconnect',()=>{
-    document.getElementById('conn').textContent='HiveMQ 재연결 중...';
-    updateConnectionUI(false);
-  });
-
-  client.on('close',()=>{
-    updateConnectionUI(false);
-  });
-
-  client.on('offline',()=>{
-    document.getElementById('conn').textContent='HiveMQ Cloud 오프라인';
-    updateConnectionUI(false);
-  });
-
-  client.on('error',()=>{
-    document.getElementById('conn').textContent='HiveMQ 연결 실패';
-    updateConnectionUI(false);
-
-    if(!savePassword){
-      try{localStorage.removeItem(STORAGE_KEY)}catch(e){}
-      document.getElementById('login').style.display='block';
-      document.getElementById('pw').value='';
-      toast('MQTT 비밀번호를 다시 입력하세요');
-
-      try{client.end(true)}catch(e){}
-    }else{
-      toast('계정/비밀번호를 확인하세요');
-    }
-  });
-
-  client.on('message',(topic,payload)=>{
-    const msg=payload.toString().trim().toUpperCase();
-
-    if(topic==='conyhome/device/status'){
-      deviceOnline=(msg==='ONLINE');
-      updateDeviceUI();
-      return;
-    }
-
-    const m=topic.match(/^conyhome\/light\/(\d\d)\/state$/);
-
-    if(m){
-      const i=parseInt(m[1],10)-1;
-
-      if(i>=0 && i<5){
-        states[i]=(msg==='ON');
-        render();
-      }
-    }
-  });
-}
-
-function connectCloud(auto=false){
-  let pw='';
-
-  if(auto){
-    try{pw=localStorage.getItem(STORAGE_KEY)||''}catch(e){}
-
-    if(!pw){
-      document.getElementById('login').style.display='block';
-      document.getElementById('conn').textContent='MQTT 비밀번호 입력 필요';
-      return;
-    }
-
-    startMqtt(pw,false);
-    return;
-  }
-
-  pw=document.getElementById('pw').value;
-  startMqtt(pw,true);
-}
-
-function resetSavedPassword(){
-  try{localStorage.removeItem(STORAGE_KEY)}catch(e){}
-
-  if(client){
-    try{client.end(true)}catch(e){}
-    client=null;
-  }
-
-  deviceOnline=false;
-  updateConnectionUI(false);
-  updateDeviceUI();
-
-  document.getElementById('conn').textContent='HiveMQ 연결 안 됨';
-  document.getElementById('login').style.display='block';
-  document.getElementById('pw').value='';
-
-  toast('저장된 MQTT 비밀번호를 초기화했습니다');
-}
-
-function send(i,state){
-  if(!client || !client.connected){
-    toast('먼저 Cloud에 연결하세요');
-    return;
-  }
-
-  const id=String(i+1).padStart(2,'0');
-
-  client.publish(
-    `conyhome/light/${id}/set`,
-    state,
-    {qos:0,retain:false}
-  );
-
-  toast(`${names[i]} ${state==='ON'?'켜기':'끄기'} 전송`);
-}
-
-function toggle(i){
-  send(i,states[i]?'OFF':'ON');
-}
-
-function setAll(state){
-  if(!client || !client.connected){
-    toast('먼저 Cloud에 연결하세요');
-    return;
-  }
-
-  for(let i=0;i<5;i++){
-    send(i,state);
-  }
-}
-
-window.addEventListener('load',()=>{
-  render();
-  updateDeviceUI();
-  connectCloud(true);
-});
+const HOST='261a8b00b16742908419be0277c596e9.s1.eu.hivemq.cloud',PORT=8884,USER='conyweb',KEY='conyhome_mqtt_password';
+const defs=[
+ ["거실","조명 1"],["거실","조명 2"],["거실","조명 3"],
+ ["주방","조명 1"],["주방","조명 2"],["주방","조명 3"],
+ ["방1","조명"],["방2","조명"],["방3","조명"],
+ ["방3","콘센트 1"],["방3","콘센트 2"]
+];
+const groups=[["거실",[1,2,3]],["주방",[4,5,6]],["방1",[7]],["방2",[8]],["방3",[9,10,11]]];
+let states=Array(11).fill(false),known=Array(11).fill(false),client=null,deviceOnline=false,rsOnline=false;
+const $=id=>document.getElementById(id);
+function toast(s){$('toast').textContent=s;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),1500)}
+function render(){let h="";for(const[g,ids]of groups){h+=`<div class="groupTitle">${g}</div>`;for(const id of ids){const i=id-1;h+=`<div class="card item ${known[i]&&states[i]?'on':''}"><div class="row"><div><div class="name">${defs[i][1]}</div><div class="info">Circuit ${String(id).padStart(2,'0')} · ${known[i]?(states[i]?'켜짐':'꺼짐'):'상태 확인 중'}</div></div><div class="stateBox"><div class="st">${known[i]?(states[i]?'ON':'OFF'):'--'}</div><div class="sw" onclick="toggle(${i})"><div class="kn"></div></div></div></div></div>`}}$('list').innerHTML=h}
+function ui(){const mq=client&&client.connected;$('dot').classList.toggle('on',mq);$('mqttPill').textContent=mq?'MQTT 연결됨':'MQTT 대기';$('mqttPill').classList.toggle('good',mq);$('devPill').textContent=deviceOnline?'D1 mini ONLINE':'D1 mini 확인 중';$('devPill').classList.toggle('good',deviceOnline);$('rsPill').textContent=rsOnline?'RS485 ONLINE':'RS485 OFFLINE';$('rsPill').classList.toggle('good',rsOnline);$('device').textContent=deviceOnline?'D1 mini · ONLINE':'D1 mini 상태 확인 전'}
+function start(pw,save){if(!pw){toast('비밀번호를 입력하세요');return}if(client)try{client.end(true)}catch(e){};$('conn').textContent='HiveMQ Cloud 연결 중...';client=mqtt.connect(`wss://${HOST}:${PORT}/mqtt`,{username:USER,password:pw,clientId:'ConyWeb-'+Math.random().toString(16).slice(2),clean:true,connectTimeout:10000,reconnectPeriod:3000});client.on('connect',()=>{$('conn').textContent='HiveMQ Cloud 연결됨';$('login').style.display='none';if(save)try{localStorage.setItem(KEY,pw)}catch(e){};client.subscribe('conyhome/circuit/+/state');client.subscribe('conyhome/device/status');client.subscribe('conyhome/rs485/status');ui()});client.on('reconnect',()=>{$('conn').textContent='HiveMQ 재연결 중...';ui()});client.on('close',ui);client.on('error',()=>{$('conn').textContent='HiveMQ 연결 실패';ui()});client.on('message',(topic,payload)=>{const m=payload.toString().trim().toUpperCase();if(topic==='conyhome/device/status'){deviceOnline=m==='ONLINE';ui();return}if(topic==='conyhome/rs485/status'){rsOnline=m==='ONLINE';ui();return}const x=topic.match(/^conyhome\/circuit\/(\d\d)\/state$/);if(x){const i=parseInt(x[1],10)-1;if(i>=0&&i<11){if(m==='UNKNOWN'){known[i]=false}else{known[i]=true;states[i]=m==='ON'}render()}}})}
+function connectCloud(auto=false){let pw='';if(auto){try{pw=localStorage.getItem(KEY)||''}catch(e){};if(!pw){$('conn').textContent='MQTT 비밀번호 입력 필요';$('login').style.display='block';return}start(pw,false)}else start($('pw').value,true)}
+function resetSavedPassword(){try{localStorage.removeItem(KEY)}catch(e){};if(client)try{client.end(true)}catch(e){};client=null;deviceOnline=false;rsOnline=false;$('login').style.display='block';$('pw').value='';$('conn').textContent='HiveMQ 연결 안 됨';ui()}
+function send(i,s){if(!client||!client.connected){toast('Cloud 연결을 확인하세요');return}client.publish(`conyhome/circuit/${String(i+1).padStart(2,'0')}/set`,s,{qos:0,retain:false});toast(`${defs[i][0]} ${defs[i][1]} ${s==='ON'?'켜기':'끄기'}`)}
+function toggle(i){send(i,known[i]&&states[i]?'OFF':'ON')}
+function groupSet(g,s){if(!client||!client.connected){toast('Cloud 연결을 확인하세요');return}client.publish(`conyhome/group/${g}/set`,s,{qos:0,retain:false});toast(s==='ON'?'조명 전체 켜기':'조명 전체 끄기')}
+render();ui();window.addEventListener('load',()=>connectCloud(true));
 </script>
-
 </body>
 </html>
