@@ -3,36 +3,37 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#090e16">
-<title>Cony Home</title>
+<meta name="theme-color" content="#f6f9ff">
+<title>Switzen Home</title>
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 <style>
 :root{
-  --bg:#090e16;--card:#121a27;--line:#263247;--text:#f6f8fc;--muted:#8f9bae;
-  --yellow:#ffd75a;--yellow2:#ffbf3f;--green:#35d786;--blue:#6fa8ff;
+  --bg:#f6f9ff;--card:#ffffff;--line:#d9e4f2;--text:#1f2a37;--muted:#6f7d92;
+  --yellow:#ffd763;--yellow2:#ffbf45;--green:#30c776;--blue:#6d96ff;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;min-height:100%;background:
-  radial-gradient(circle at 80% -10%,rgba(85,120,210,.18),transparent 34%),
-  radial-gradient(circle at -10% 30%,rgba(255,196,64,.07),transparent 30%),
-  var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif}
+  radial-gradient(circle at 80% -10%,rgba(109,150,255,.18),transparent 36%),
+  radial-gradient(circle at -10% 26%,rgba(255,215,99,.18),transparent 28%),
+  linear-gradient(180deg,#fbfdff 0%,#f4f8ff 100%);
+  color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif}
 .wrap{max-width:680px;margin:auto;padding:18px 10px 48px}
 .hero{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
 .brand{font-size:31px;font-weight:900;letter-spacing:-1.4px;line-height:1}
 .subtitle{margin-top:6px;color:var(--muted);font-size:13px}
-.badge{padding:6px 8px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.025);color:#b9c4d4;font-size:9px;font-weight:800}
-.card{background:linear-gradient(145deg,rgba(23,33,49,.96),rgba(16,23,35,.96));border:1px solid var(--line);border-radius:20px;box-shadow:0 10px 28px rgba(0,0,0,.15)}
+.badge{padding:6px 8px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.78);color:#6d7b92;font-size:9px;font-weight:800}
+.card{background:linear-gradient(180deg,#ffffff,#f8fbff);border:1px solid var(--line);border-radius:20px;box-shadow:0 10px 30px rgba(79,107,160,.10)}
 .status{margin-top:16px;padding:14px 15px}
 .statusTop{display:flex;align-items:center;gap:9px}
-.dot{width:9px;height:9px;border-radius:50%;background:#637084}.dot.on{background:var(--green);box-shadow:0 0 11px rgba(53,215,134,.7)}
+.dot{width:9px;height:9px;border-radius:50%;background:#b8c4d6}.dot.on{background:var(--green);box-shadow:0 0 11px rgba(53,215,134,.7)}
 .statusTitle{font-size:16px;font-weight:850}.deviceText{margin:5px 0 0 18px;color:var(--muted);font-size:10px}
-.chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px;padding-top:9px;border-top:1px solid rgba(255,255,255,.06)}
-.chip{padding:5px 7px;border-radius:999px;background:#202a39;color:#aab5c6;font-size:9px;font-weight:700}.chip.good{background:rgba(53,215,134,.11);color:#a7efc8}
-.login{margin-top:10px;padding:12px}.login input{width:100%;background:#0c121c;color:#fff;border:1px solid #314057;border-radius:11px;padding:10px;font-size:14px}.login button{width:100%;margin-top:7px;border:0;border-radius:11px;padding:10px;font-weight:850}
-.reset{text-align:right;margin:4px 2px}.reset button{border:0;background:transparent;color:#778397;font-size:9px;padding:4px}
+.chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px;padding-top:9px;border-top:1px solid rgba(40,76,120,.08)}
+.chip{padding:5px 7px;border-radius:999px;background:#eef4fb;color:#61718a;font-size:9px;font-weight:700}.chip.good{background:rgba(53,215,134,.11);color:#a7efc8}
+.login{margin-top:10px;padding:12px}.login input{width:100%;background:#ffffff;color:#1f2a37;border:1px solid #d6e2f0;border-radius:11px;padding:10px;font-size:14px}.login button{width:100%;margin-top:7px;border:0;border-radius:11px;padding:10px;font-weight:850}
+.reset{text-align:right;margin:4px 2px}.reset button{border:0;background:transparent;color:#7d8aa0;font-size:9px;padding:4px}
 .quick{margin-top:10px;padding:11px}.quickTitle{font-size:10px;color:var(--muted);margin:0 0 7px 2px;font-weight:750}
-.quickGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.btn{border:0;border-radius:14px;padding:12px 8px;font-size:14px;font-weight:900}.btnOn{background:linear-gradient(135deg,var(--yellow),var(--yellow2));color:#151719}.btnOff{background:#2a3546;color:#fff}
-.globalSchedule{margin-top:10px;padding:0;overflow:hidden}.headTitle{display:flex;gap:8px;align-items:center;font-size:15px;font-weight:850}.iconBox{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:rgba(255,215,90,.1)}
+.quickGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.btn{border:0;border-radius:14px;padding:12px 8px;font-size:14px;font-weight:900}.btnOn{background:linear-gradient(135deg,var(--yellow),var(--yellow2));color:#151719}.btnOff{background:#dfe7f2;color:#243247}
+.globalSchedule{margin-top:10px;padding:0;overflow:hidden}.headTitle{display:flex;gap:8px;align-items:center;font-size:15px;font-weight:850}.iconBox{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:rgba(255,215,90,.18)}
 .globalSchedule>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 14px;cursor:pointer;list-style:none;border:0}
 .globalSchedule>summary::-webkit-details-marker{display:none}
 .globalSchedule>summary::before{content:none}
@@ -42,20 +43,20 @@ html,body{margin:0;min-height:100%;background:
 .globalBody{padding:0 13px 13px}
 
 .desc{margin-top:3px;color:var(--muted);font-size:10px}
-.scheduleGrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}.scheduleRow{padding:9px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.055);border-radius:12px}
+.scheduleGrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}.scheduleRow{padding:9px;background:#f7faff;border:1px solid #e4edf7;border-radius:12px}
 .schTop{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.schLabel{font-size:11px;font-weight:800}.checkWrap{display:flex;align-items:center;gap:4px;color:var(--muted);font-size:9px}
-input[type=checkbox]{width:16px;height:16px;accent-color:var(--yellow)}input[type=time]{width:100%;background:#0c121c;color:#fff;border:1px solid #314057;border-radius:10px;padding:8px;font-size:13px;color-scheme:dark}
-.saveBtn{width:100%;margin-top:8px;border:1px solid #35445b;background:#202b3c;color:#eef3fb;border-radius:11px;padding:9px;font-size:12px;font-weight:800}
-.section{margin-top:18px}.sectionTitle{display:flex;justify-content:space-between;align-items:end;margin:0 3px 7px}.sectionTitle strong{font-size:18px}.sectionTitle span{font-size:9px;color:#758196}
-.roomHeader{margin-top:14px;padding:0 3px;color:#b8c2d1;font-size:11px;font-weight:850}
-.device{padding:11px 12px;margin-top:6px}.device.on{border-color:rgba(255,215,90,.36);background:linear-gradient(145deg,rgba(34,34,28,.96),rgba(18,25,36,.96))}
-.deviceRow{display:flex;justify-content:space-between;align-items:center;gap:10px}.left{display:flex;align-items:center;gap:9px}.dicon{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:#202b3b;font-size:16px}
-.name{font-size:15px;font-weight:850}.meta{margin-top:2px;color:var(--muted);font-size:9px}.stateWrap{display:flex;align-items:center;gap:6px}.st{font-size:9px;font-weight:850;color:#7e8a9c;min-width:23px;text-align:right}.device.on .st{color:#ffe99a}
-.sw{width:48px;height:28px;border-radius:19px;background:#2b3648;position:relative}.knob{position:absolute;width:20px;height:20px;left:4px;top:4px;border-radius:50%;background:#fff;transition:.16s}.device.on .sw{background:linear-gradient(135deg,var(--yellow),var(--yellow2))}.device.on .knob{left:24px;background:#14171c}
+input[type=checkbox]{width:16px;height:16px;accent-color:var(--yellow)}input[type=time]{width:100%;background:#ffffff;color:#1f2a37;border:1px solid #d6e2f0;border-radius:10px;padding:8px;font-size:13px;color-scheme:light}
+.saveBtn{width:100%;margin-top:8px;border:1px solid #d6e2f0;background:#edf3fb;color:#243247;border-radius:11px;padding:9px;font-size:12px;font-weight:800}
+.section{margin-top:18px}.sectionTitle{display:flex;justify-content:space-between;align-items:end;margin:0 3px 7px}.sectionTitle strong{font-size:18px}.sectionTitle span{font-size:9px;color:#8190a6}
+.roomHeader{margin-top:14px;padding:0 3px;color:#5f6f86;font-size:11px;font-weight:850}
+.device{padding:11px 12px;margin-top:6px}.device.on{border-color:rgba(255,215,90,.36);background:linear-gradient(180deg,#fffdf5,#fff8e5)}
+.deviceRow{display:flex;justify-content:space-between;align-items:center;gap:10px}.left{display:flex;align-items:center;gap:9px}.dicon{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:#eef4fb;font-size:16px}
+.name{font-size:15px;font-weight:850}.meta{margin-top:2px;color:var(--muted);font-size:9px}.stateWrap{display:flex;align-items:center;gap:6px}.st{font-size:9px;font-weight:850;color:#75839a;min-width:23px;text-align:right}.device.on .st{color:#b8860b}
+.sw{width:48px;height:28px;border-radius:19px;background:#d9e3ef;position:relative}.knob{position:absolute;width:20px;height:20px;left:4px;top:4px;border-radius:50%;background:#fff;transition:.16s}.device.on .sw{background:linear-gradient(135deg,var(--yellow),var(--yellow2))}.device.on .knob{left:24px;background:#243247}
 .pending{opacity:.75}.pending .sw::after{content:"";position:absolute;inset:-4px;border:1px solid rgba(111,168,255,.6);border-radius:26px;animation:pulse 1s infinite}@keyframes pulse{50%{opacity:.2}}
-details{margin-top:8px;border-top:1px solid rgba(255,255,255,.055);padding-top:7px}summary{list-style:none;color:#94a0b2;font-size:10px;font-weight:750;cursor:pointer}summary::-webkit-details-marker{display:none}summary::before{content:"⏱ "}
-.note{margin-top:18px;color:#667287;font-size:9px;line-height:1.55;text-align:center}.footer{margin-top:18px;padding-top:12px;border-top:1px solid rgba(255,255,255,.05);color:#59667b;text-align:center;font-size:8px}
-#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#05080d;border:1px solid #263247;color:#fff;padding:10px 15px;border-radius:20px;opacity:0;pointer-events:none;transition:.18s;white-space:nowrap;z-index:20;font-size:12px}#toast.show{opacity:.96}
+details{margin-top:8px;border-top:1px solid rgba(40,76,120,.08);padding-top:7px}summary{list-style:none;color:#6f7d92;font-size:10px;font-weight:750;cursor:pointer}summary::-webkit-details-marker{display:none}summary::before{content:"⏱ "}
+.note{margin-top:18px;color:#72809a;font-size:9px;line-height:1.55;text-align:center}.footer{margin-top:18px;padding-top:12px;border-top:1px solid rgba(40,76,120,.08);color:#7b879c;text-align:center;font-size:8px}
+#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#ffffff;border:1px solid #d9e4f2;color:#1f2a37;padding:10px 15px;border-radius:20px;opacity:0;pointer-events:none;transition:.18s;white-space:nowrap;z-index:20;font-size:12px}#toast.show{opacity:.96}
 @media(max-width:520px){.wrap{padding:16px 9px 44px}.brand{font-size:30px}.scheduleGrid{grid-template-columns:1fr 1fr}}
 
 /* ===== V2.4 MOBILE 2-COLUMN DEVICE GRID ===== */
@@ -163,7 +164,7 @@ details{margin-top:8px;border-top:1px solid rgba(255,255,255,.055);padding-top:7
 <body>
 <div class="wrap">
   <div class="hero">
-    <div><div class="brand">Cony Home</div><div class="subtitle">Cloud Remote · Compact Grid</div></div>
+    <div><div class="brand">Switzen Home</div><div class="subtitle">Cloud Remote · Bright Edition</div></div>
     <div class="badge">EXTERNAL</div>
   </div>
 
@@ -174,7 +175,7 @@ details{margin-top:8px;border-top:1px solid rgba(255,255,255,.055);padding-top:7
   </div>
 
   <div id="login" class="card login">
-    <input id="pw" type="password" placeholder="conyweb MQTT 비밀번호">
+    <input id="pw" type="password" placeholder="switzenweb MQTT 비밀번호">
     <button onclick="connectCloud(false)">저장하고 연결</button>
   </div>
   <div class="reset"><button onclick="resetSavedPassword()">MQTT 비밀번호 초기화</button></div>
@@ -328,7 +329,7 @@ function start(pw,save){
       return
     }
     m=topic.match(/^conyhome\/circuit\/(\d\d)\/state$/);
-    if(m){const i=parseInt(m[1],10)-1;if(i>=0&&i<11){if(up==='UNKNOWN'){known[i]=false;renderDevices()}else acceptActual(i,up==='ON')}return}
+    if(m){const i=parseInt(m[1],10)-1;if(i>=0&&i<11){if(up==='UNKNOWN'){known[i]=false;if(!scheduleUiBusy())renderDevices()}else acceptActual(i,up==='ON')}return}
   });
 }
 
@@ -358,7 +359,18 @@ function toggle(i){
 function groupSet(s){
   if(!client||!client.connected||!deviceOnline){toast('D1 mini 연결을 확인하세요');return}
   const state=s==='ON';
-  for(let i=0;i<9;i++)optimistic(i,state,4500);
+
+  // 전체 명령은 9개 상태를 먼저 한 번에 바꾸고 화면을 한 번만 다시 그림
+  // → 모바일에서 개별 스위치가 즉시 확실하게 따라오게 함
+  for(let i=0;i<9;i++){
+    states[i]=state;
+    known[i]=true;
+    pendingDesired[i]=state;
+    pendingUntil[i]=Date.now()+5500;
+  }
+
+  if(!scheduleUiBusy()) renderDevices();
+
   client.publish('conyhome/group/lights/set',s,{qos:0,retain:false});
   toast(state?'조명 전체 켜기':'조명 전체 끄기');
 }
