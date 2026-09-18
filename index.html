@@ -8,261 +8,587 @@
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 <style>
 :root{
-  --bg:#090e16;--card:#121a27;--line:#263247;--text:#f6f8fc;--muted:#8f9bae;
-  --yellow:#ffd75a;--yellow2:#ffbf3f;--green:#35d786;--blue:#6fa8ff;
+  --bg:#090e16;--panel:#121a27;--panel2:#172131;--line:#263247;
+  --text:#f7f9fd;--muted:#8f9bae;--yellow:#ffd75a;--yellow2:#ffbd3f;
+  --green:#35d786;--blue:#73a7ff;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;min-height:100%;background:
-  radial-gradient(circle at 80% -10%,rgba(85,120,210,.18),transparent 34%),
-  radial-gradient(circle at -10% 30%,rgba(255,196,64,.07),transparent 30%),
-  var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif}
-.wrap{max-width:680px;margin:auto;padding:18px 10px 48px}
-.hero{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
-.brand{font-size:31px;font-weight:900;letter-spacing:-1.4px;line-height:1}
-.subtitle{margin-top:6px;color:var(--muted);font-size:13px}
-.badge{padding:6px 8px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.025);color:#b9c4d4;font-size:9px;font-weight:800}
-.card{background:linear-gradient(145deg,rgba(23,33,49,.96),rgba(16,23,35,.96));border:1px solid var(--line);border-radius:20px;box-shadow:0 10px 28px rgba(0,0,0,.15)}
-.status{margin-top:16px;padding:14px 15px}
-.statusTop{display:flex;align-items:center;gap:9px}
-.dot{width:9px;height:9px;border-radius:50%;background:#637084}.dot.on{background:var(--green);box-shadow:0 0 11px rgba(53,215,134,.7)}
-.statusTitle{font-size:16px;font-weight:850}.deviceText{margin:5px 0 0 18px;color:var(--muted);font-size:10px}
-.chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px;padding-top:9px;border-top:1px solid rgba(255,255,255,.06)}
-.chip{padding:5px 7px;border-radius:999px;background:#202a39;color:#aab5c6;font-size:9px;font-weight:700}.chip.good{background:rgba(53,215,134,.11);color:#a7efc8}
-.login{margin-top:10px;padding:12px}.login input{width:100%;background:#0c121c;color:#fff;border:1px solid #314057;border-radius:11px;padding:10px;font-size:14px}.login button{width:100%;margin-top:7px;border:0;border-radius:11px;padding:10px;font-weight:850}
-.reset{text-align:right;margin:4px 2px}.reset button{border:0;background:transparent;color:#778397;font-size:9px;padding:4px}
-.quick{margin-top:10px;padding:11px}.quickTitle{font-size:10px;color:var(--muted);margin:0 0 7px 2px;font-weight:750}
-.quickGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.btn{border:0;border-radius:14px;padding:12px 8px;font-size:14px;font-weight:900}.btnOn{background:linear-gradient(135deg,var(--yellow),var(--yellow2));color:#151719}.btnOff{background:#2a3546;color:#fff}
-.globalSchedule{margin-top:10px;padding:0;overflow:hidden}.headTitle{display:flex;gap:8px;align-items:center;font-size:15px;font-weight:850}.iconBox{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:rgba(255,215,90,.1)}
-.globalSchedule>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 14px;cursor:pointer;list-style:none;border:0}
-.globalSchedule>summary::-webkit-details-marker{display:none}
-.globalSchedule>summary::before{content:none}
-.globalSchedule>summary::after{content:"▾";color:#8290a4;font-size:14px;transition:.18s}
-.globalSchedule[open]>summary::after{transform:rotate(180deg)}
-.globalSummaryText{min-width:0}
-.globalBody{padding:0 13px 13px}
+radial-gradient(circle at 85% -10%,rgba(85,120,210,.18),transparent 32%),
+var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif}
+body{min-height:100vh}
+.wrap{max-width:720px;margin:auto;padding:16px 10px 42px}
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.brand{font-size:29px;font-weight:900;letter-spacing:-1.3px;line-height:1}
+.sub{margin-top:5px;font-size:11px;color:var(--muted)}
+.badge{font-size:9px;font-weight:800;color:#b9c4d4;border:1px solid var(--line);border-radius:999px;padding:5px 7px}
 
-.desc{margin-top:3px;color:var(--muted);font-size:10px}
-.scheduleGrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}.scheduleRow{padding:9px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.055);border-radius:12px}
-.schTop{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.schLabel{font-size:11px;font-weight:800}.checkWrap{display:flex;align-items:center;gap:4px;color:var(--muted);font-size:9px}
-input[type=checkbox]{width:16px;height:16px;accent-color:var(--yellow)}input[type=time]{width:100%;background:#0c121c;color:#fff;border:1px solid #314057;border-radius:10px;padding:8px;font-size:13px;color-scheme:dark}
-.saveBtn{width:100%;margin-top:8px;border:1px solid #35445b;background:#202b3c;color:#eef3fb;border-radius:11px;padding:9px;font-size:12px;font-weight:800}
-.section{margin-top:18px}.sectionTitle{display:flex;justify-content:space-between;align-items:end;margin:0 3px 7px}.sectionTitle strong{font-size:18px}.sectionTitle span{font-size:9px;color:#758196}
-.roomHeader{margin-top:14px;padding:0 3px;color:#b8c2d1;font-size:11px;font-weight:850}
-.device{padding:11px 12px;margin-top:6px}.device.on{border-color:rgba(255,215,90,.36);background:linear-gradient(145deg,rgba(34,34,28,.96),rgba(18,25,36,.96))}
-.deviceRow{display:flex;justify-content:space-between;align-items:center;gap:10px}.left{display:flex;align-items:center;gap:9px}.dicon{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:#202b3b;font-size:16px}
-.name{font-size:15px;font-weight:850}.meta{margin-top:2px;color:var(--muted);font-size:9px}.stateWrap{display:flex;align-items:center;gap:6px}.st{font-size:9px;font-weight:850;color:#7e8a9c;min-width:23px;text-align:right}.device.on .st{color:#ffe99a}
-.sw{width:48px;height:28px;border-radius:19px;background:#2b3648;position:relative}.knob{position:absolute;width:20px;height:20px;left:4px;top:4px;border-radius:50%;background:#fff;transition:.16s}.device.on .sw{background:linear-gradient(135deg,var(--yellow),var(--yellow2))}.device.on .knob{left:24px;background:#14171c}
-.pending{opacity:.75}.pending .sw::after{content:"";position:absolute;inset:-4px;border:1px solid rgba(111,168,255,.6);border-radius:26px;animation:pulse 1s infinite}@keyframes pulse{50%{opacity:.2}}
-details{margin-top:8px;border-top:1px solid rgba(255,255,255,.055);padding-top:7px}summary{list-style:none;color:#94a0b2;font-size:10px;font-weight:750;cursor:pointer}summary::-webkit-details-marker{display:none}summary::before{content:"⏱ "}
-.note{margin-top:18px;color:#667287;font-size:9px;line-height:1.55;text-align:center}.footer{margin-top:18px;padding-top:12px;border-top:1px solid rgba(255,255,255,.05);color:#59667b;text-align:center;font-size:8px}
-#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#05080d;border:1px solid #263247;color:#fff;padding:10px 15px;border-radius:20px;opacity:0;pointer-events:none;transition:.18s;white-space:nowrap;z-index:20;font-size:12px}#toast.show{opacity:.96}
-@media(max-width:520px){.wrap{padding:16px 9px 44px}.brand{font-size:30px}.scheduleGrid{grid-template-columns:1fr 1fr}}
+.status{
+  margin-top:12px;padding:11px 12px;border:1px solid var(--line);border-radius:17px;
+  background:linear-gradient(145deg,rgba(23,33,49,.96),rgba(16,23,35,.96))
+}
+.statusLine{display:flex;align-items:center;gap:8px}
+.dot{width:9px;height:9px;border-radius:50%;background:#647084}
+.dot.on{background:var(--green);box-shadow:0 0 10px rgba(53,215,134,.65)}
+.statusTitle{font-size:14px;font-weight:850}
+.pills{margin-top:8px;display:flex;gap:5px;flex-wrap:wrap}
+.pill{font-size:9px;padding:4px 6px;border-radius:999px;background:#202a39;color:#aeb8c8}
+.pill.good{background:rgba(53,215,134,.10);color:#a9efca}
+
+.login{margin-top:10px;padding:10px;border:1px solid var(--line);border-radius:15px;background:var(--panel)}
+.login input{width:100%;background:#0c121c;color:#fff;border:1px solid #314057;border-radius:10px;padding:9px;font-size:13px}
+.login button{width:100%;margin-top:7px;border:0;border-radius:10px;padding:9px;font-weight:850}
+.reset{text-align:right;margin:3px 1px}
+.reset button{border:0;background:transparent;color:#748096;font-size:9px;padding:3px}
+
+.quick{
+  margin-top:10px;padding:9px;border:1px solid var(--line);border-radius:17px;background:var(--panel)
+}
+.quickGrid{display:grid;grid-template-columns:1fr 1fr 44px;gap:7px}
+.qbtn{border:0;border-radius:12px;padding:11px 7px;font-size:13px;font-weight:900}
+.onBtn{background:linear-gradient(135deg,var(--yellow),var(--yellow2));color:#151719}
+.offBtn{background:#2a3546;color:#fff}
+.clockBtn{background:#202b3c;color:#cfd7e5;font-size:17px}
+
+.sectionHead{display:flex;align-items:center;justify-content:space-between;margin:15px 2px 7px}
+.sectionHead strong{font-size:16px}
+.sectionHead span{font-size:9px;color:#758196}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.tile{
+  position:relative;min-height:104px;padding:11px;border:1px solid var(--line);border-radius:16px;
+  background:linear-gradient(145deg,rgba(23,33,49,.96),rgba(16,23,35,.96))
+}
+.tile.on{border-color:rgba(255,215,90,.42);background:linear-gradient(145deg,rgba(37,36,27,.96),rgba(18,25,36,.96))}
+.tile.pending{opacity:.78}
+.roomTag{font-size:9px;color:#8692a5}
+.tileName{margin-top:2px;font-size:15px;font-weight:900}
+.meta{margin-top:3px;font-size:8.5px;color:#7e899c}
+.tileBottom{position:absolute;left:11px;right:11px;bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.scheduleBtn{
+  border:0;background:#202b3c;color:#aeb9c9;border-radius:9px;padding:6px 8px;font-size:11px;font-weight:800
+}
+.stateWrap{display:flex;align-items:center;gap:5px}
+.st{font-size:9px;font-weight:900;color:#8490a3}
+.tile.on .st{color:#ffe89a}
+.sw{width:43px;height:25px;border-radius:17px;background:#2b3648;position:relative}
+.knob{position:absolute;width:17px;height:17px;left:4px;top:4px;border-radius:50%;background:#fff;transition:.15s}
+.tile.on .sw{background:linear-gradient(135deg,var(--yellow),var(--yellow2))}
+.tile.on .knob{left:22px;background:#14171c}
+.pending .sw::after{content:"";position:absolute;inset:-3px;border:1px solid rgba(115,167,255,.6);border-radius:20px;animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.2}}
+
+.note{margin-top:14px;text-align:center;color:#657187;font-size:9px;line-height:1.5}
+.footer{margin-top:14px;padding-top:10px;border-top:1px solid rgba(255,255,255,.05);text-align:center;color:#556177;font-size:8px}
+
+.sheetBackdrop{
+  position:fixed;inset:0;background:rgba(0,0,0,.56);display:none;align-items:flex-end;justify-content:center;z-index:30
+}
+.sheetBackdrop.show{display:flex}
+.sheet{
+  width:min(720px,100%);background:#111926;border:1px solid #2b384f;border-radius:22px 22px 0 0;
+  padding:15px 14px calc(16px + env(safe-area-inset-bottom));box-shadow:0 -18px 50px rgba(0,0,0,.35)
+}
+.sheetGrab{width:38px;height:4px;border-radius:99px;background:#3a4658;margin:0 auto 11px}
+.sheetHead{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.sheetTitle{font-size:18px;font-weight:900}
+.sheetClose{border:0;background:#222d3d;color:#d5dce7;width:32px;height:32px;border-radius:10px;font-size:16px}
+.schGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:13px}
+.schCard{background:#0c121c;border:1px solid #2b384f;border-radius:14px;padding:10px}
+.schTop{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.schLabel{font-size:12px;font-weight:850}
+.checkWrap{display:flex;align-items:center;gap:5px;color:#8f9bae;font-size:10px}
+input[type=checkbox]{width:17px;height:17px;accent-color:var(--yellow)}
+input[type=time]{width:100%;background:#090e16;color:#fff;border:1px solid #314057;border-radius:10px;padding:9px;font-size:14px;color-scheme:dark}
+.sheetSave{width:100%;margin-top:10px;border:0;border-radius:12px;padding:11px;background:linear-gradient(135deg,var(--yellow),var(--yellow2));color:#151719;font-weight:900;font-size:14px}
+.sheetHint{margin-top:7px;text-align:center;color:#748096;font-size:9px}
+
+#toast{
+  position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#05080d;border:1px solid #263247;
+  color:#fff;padding:9px 13px;border-radius:18px;opacity:0;pointer-events:none;transition:.18s;white-space:nowrap;z-index:50;font-size:11px
+}
+#toast.show{opacity:.96}
+
+@media(max-width:360px){
+  .grid{grid-template-columns:1fr}
+  .schGrid{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="hero">
-    <div><div class="brand">Cony Home</div><div class="subtitle">Cloud Remote · 11 Circuits</div></div>
+  <div class="top">
+    <div>
+      <div class="brand">Cony Home</div>
+      <div class="sub">Cloud Remote · 11 Circuits</div>
+    </div>
     <div class="badge">EXTERNAL</div>
   </div>
 
-  <div class="card status">
-    <div class="statusTop"><div id="dot" class="dot"></div><div id="conn" class="statusTitle">HiveMQ 연결 확인 중</div></div>
-    <div id="deviceText" class="deviceText">D1 mini 상태 확인 전</div>
-    <div class="chips"><div id="mqttChip" class="chip">MQTT</div><div id="devChip" class="chip">D1 mini</div><div id="rsChip" class="chip">RS485</div></div>
+  <div class="status">
+    <div class="statusLine">
+      <div id="dot" class="dot"></div>
+      <div id="conn" class="statusTitle">HiveMQ 연결 확인 중</div>
+    </div>
+    <div class="pills">
+      <div id="mqttChip" class="pill">MQTT</div>
+      <div id="devChip" class="pill">D1 mini</div>
+      <div id="rsChip" class="pill">RS485</div>
+    </div>
   </div>
 
-  <div id="login" class="card login">
+  <div id="login" class="login">
     <input id="pw" type="password" placeholder="conyweb MQTT 비밀번호">
     <button onclick="connectCloud(false)">저장하고 연결</button>
   </div>
   <div class="reset"><button onclick="resetSavedPassword()">MQTT 비밀번호 초기화</button></div>
 
-  <div class="card quick">
-    <div class="quickTitle">QUICK CONTROL · 조명 9회로</div>
+  <div class="quick">
     <div class="quickGrid">
-      <button class="btn btnOn" onclick="groupSet('ON')">전체 켜기</button>
-      <button class="btn btnOff" onclick="groupSet('OFF')">전체 끄기</button>
+      <button class="qbtn onBtn" onclick="groupSet('ON')">전체 켜기</button>
+      <button class="qbtn offBtn" onclick="groupSet('OFF')">전체 끄기</button>
+      <button class="qbtn clockBtn" onclick="openGlobalSchedule()" aria-label="전체 조명 예약">⏰</button>
     </div>
   </div>
 
-  <details class="card globalSchedule">
-    <summary>
-      <div class="headTitle"><div class="iconBox">⏰</div><div class="globalSummaryText"><div>전체 조명 예약</div><div class="desc">눌러서 예약시간 설정</div></div></div>
-    </summary>
-    <div class="globalBody">
-      <div id="globalScheduleArea"></div>
-    </div>
-  </details>
-
-  <div class="section">
-    <div class="sectionTitle"><strong>기기 제어</strong><span>실제 RS485 상태로 자동 보정</span></div>
-    <div id="devices"></div>
+  <div class="sectionHead">
+    <strong>기기 제어</strong>
+    <span>실제 RS485 상태 자동 보정</span>
   </div>
 
-  <div class="note">명령을 누르면 화면은 즉시 반응합니다. 실제 상태 메시지가 도착하면 최종 상태로 자동 보정됩니다.</div>
+  <div id="devices" class="grid"></div>
+
+  <div class="note">버튼은 즉시 반응하고, 실제 BESTIN 상태가 들어오면 최종 상태로 자동 보정됩니다.</div>
   <div class="footer">Cony Home · D1 mini V4 · HiveMQ Cloud · BESTIN RS485</div>
 </div>
+
+<div id="sheetBackdrop" class="sheetBackdrop" onclick="backdropClose(event)">
+  <div class="sheet">
+    <div class="sheetGrab"></div>
+    <div class="sheetHead">
+      <div id="sheetTitle" class="sheetTitle">예약 설정</div>
+      <button class="sheetClose" onclick="closeSchedule()">✕</button>
+    </div>
+
+    <div class="schGrid">
+      <div class="schCard">
+        <div class="schTop">
+          <div class="schLabel">켜기</div>
+          <label class="checkWrap"><input id="schOnE" type="checkbox"> 사용</label>
+        </div>
+        <input id="schOnT" type="time" value="07:00">
+      </div>
+
+      <div class="schCard">
+        <div class="schTop">
+          <div class="schLabel">끄기</div>
+          <label class="checkWrap"><input id="schOffE" type="checkbox"> 사용</label>
+        </div>
+        <input id="schOffT" type="time" value="23:00">
+      </div>
+    </div>
+
+    <button class="sheetSave" onclick="saveSchedule()">예약 저장</button>
+    <div id="sheetHint" class="sheetHint"></div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
 const HOST='261a8b00b16742908419be0277c596e9.s1.eu.hivemq.cloud';
 const PORT=8884, USER='conyweb', KEY='conyhome_mqtt_password';
+
 const defs=[
   ["거실","조명 1","조명"],["거실","조명 2","조명"],["거실","조명 3","조명"],
   ["주방","조명 1","조명"],["주방","조명 2","조명"],["주방","조명 3","조명"],
   ["방1","조명","조명"],["방2","조명","조명"],["방3","조명","조명"],
   ["방3","콘센트 1","콘센트"],["방3","콘센트 2","콘센트"]
 ];
-const groups=[["거실",[1,2,3]],["주방",[4,5,6]],["방1",[7]],["방2",[8]],["방3",[9,10,11]]];
-let states=Array(11).fill(false),known=Array(11).fill(false);
-let schedules=Array.from({length:9},()=>({onEnabled:false,onHour:7,onMinute:0,offEnabled:false,offHour:23,offMinute:0}));
-let globalSchedule={onEnabled:false,onHour:7,onMinute:0,offEnabled:false,offHour:23,offMinute:0};
-let pendingDesired=Array(11).fill(null),pendingUntil=Array(11).fill(0);
-let client=null,deviceOnline=false,rsOnline=false;
 
-// 예약 details/time picker를 열어둔 동안 재렌더링 금지
-function scheduleUiBusy(){
-  const openDetail=document.querySelector('details[open]');
-  const a=document.activeElement;
-  const editingInput=a && (
-    a.matches('input[type="time"]') ||
-    a.matches('input[type="checkbox"]')
-  );
-  return !!openDetail || !!editingInput;
-}
+let states=Array(11).fill(false);
+let known=Array(11).fill(false);
+let schedules=Array.from({length:9},()=>({
+  onEnabled:false,onHour:7,onMinute:0,
+  offEnabled:false,offHour:23,offMinute:0
+}));
+let globalSchedule={
+  onEnabled:false,onHour:7,onMinute:0,
+  offEnabled:false,offHour:23,offMinute:0
+};
+
+let pendingDesired=Array(11).fill(null);
+let pendingUntil=Array(11).fill(0);
+
+let client=null,deviceOnline=false,rsOnline=false;
+let scheduleTarget='global'; // global 또는 circuit index 0~8
 
 const $=id=>document.getElementById(id);
-function toast(s){$('toast').textContent=s;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),1450)}
-function hhmm(h,m){return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')}
-function parseSchedulePayload(s){const v=s.split(',').map(Number);if(v.length!==6)return null;return {onEnabled:!!v[0],onHour:v[1],onMinute:v[2],offEnabled:!!v[3],offHour:v[4],offMinute:v[5]}}
-function schedulePayload(s){return `${s.onEnabled?1:0},${s.onHour},${s.onMinute},${s.offEnabled?1:0},${s.offHour},${s.offMinute}`}
-function readSchedule(prefix){const on=$(`${prefix}OnT`).value.split(':').map(Number),off=$(`${prefix}OffT`).value.split(':').map(Number);return {onEnabled:$(`${prefix}OnE`).checked,onHour:on[0],onMinute:on[1],offEnabled:$(`${prefix}OffE`).checked,offHour:off[0],offMinute:off[1]}}
-function scheduleHtml(prefix,s){return `<div class="scheduleGrid"><div class="scheduleRow"><div class="schTop"><div class="schLabel">켜기</div><label class="checkWrap"><input id="${prefix}OnE" type="checkbox" ${s.onEnabled?'checked':''}> 사용</label></div><input id="${prefix}OnT" type="time" value="${hhmm(s.onHour,s.onMinute)}"></div><div class="scheduleRow"><div class="schTop"><div class="schLabel">끄기</div><label class="checkWrap"><input id="${prefix}OffE" type="checkbox" ${s.offEnabled?'checked':''}> 사용</label></div><input id="${prefix}OffT" type="time" value="${hhmm(s.offHour,s.offMinute)}"></div></div>`}
 
-function renderGlobal(){ $('globalScheduleArea').innerHTML=scheduleHtml('g',globalSchedule)+`<button class="saveBtn" onclick="saveGlobal()">전체 조명 예약 저장</button>` }
+function toast(s){
+  $('toast').textContent=s;
+  $('toast').classList.add('show');
+  setTimeout(()=>$('toast').classList.remove('show'),1400);
+}
+
+function hhmm(h,m){
+  return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
+}
+
+function parseSchedulePayload(s){
+  const v=s.split(',').map(Number);
+  if(v.length!==6)return null;
+  return {
+    onEnabled:!!v[0],onHour:v[1],onMinute:v[2],
+    offEnabled:!!v[3],offHour:v[4],offMinute:v[5]
+  };
+}
+
+function schedulePayload(s){
+  return `${s.onEnabled?1:0},${s.onHour},${s.onMinute},${s.offEnabled?1:0},${s.offHour},${s.offMinute}`;
+}
 
 function renderDevices(){
   let h='';
-  for(const [room,ids] of groups){
-    h+=`<div class="roomHeader">${room}</div>`;
-    for(const id of ids){
-      const i=id-1,isPending=Date.now()<pendingUntil[i];
-      let state=states[i],k=known[i];
-      if(isPending&&pendingDesired[i]!==null){state=pendingDesired[i];k=true}
-      const icon=defs[i][2]==='조명'?'💡':'🔌';
-      h+=`<div class="card device ${k&&state?'on':''} ${isPending?'pending':''}"><div class="deviceRow"><div class="left"><div class="dicon">${icon}</div><div><div class="name">${defs[i][1]}</div><div class="meta">Circuit ${String(id).padStart(2,'0')} · ${k?(state?'켜짐':'꺼짐'):'상태 확인 중'}</div></div></div><div class="stateWrap"><div class="st">${k?(state?'ON':'OFF'):'--'}</div><div class="sw" onclick="toggle(${i})"><div class="knob"></div></div></div></div>${i<9?`<details><summary>예약</summary>${scheduleHtml('c'+id,schedules[i])}<button class="saveBtn" onclick="saveIndividual(${id})">이 조명 예약 저장</button></details>`:''}</div>`;
+  for(let i=0;i<11;i++){
+    const id=i+1;
+    const pending=Date.now()<pendingUntil[i];
+    let state=states[i], k=known[i];
+
+    if(pending && pendingDesired[i]!==null){
+      state=pendingDesired[i];
+      k=true;
     }
+
+    const icon=defs[i][2]==='조명'?'💡':'🔌';
+
+    h+=`
+    <div class="tile ${k&&state?'on':''} ${pending?'pending':''}">
+      <div class="roomTag">${defs[i][0]}</div>
+      <div class="tileName">${icon} ${defs[i][1]}</div>
+      <div class="meta">Circuit ${String(id).padStart(2,'0')} · ${k?(state?'켜짐':'꺼짐'):'확인 중'}</div>
+
+      <div class="tileBottom">
+        ${i<9
+          ? `<button class="scheduleBtn" onclick="openCircuitSchedule(${i})">⏱ 예약</button>`
+          : `<span></span>`
+        }
+
+        <div class="stateWrap">
+          <div class="st">${k?(state?'ON':'OFF'):'--'}</div>
+          <div class="sw" onclick="toggle(${i})">
+            <div class="knob"></div>
+          </div>
+        </div>
+      </div>
+    </div>`;
   }
+
   $('devices').innerHTML=h;
 }
 
 function ui(){
   const mq=client&&client.connected;
+
   $('dot').classList.toggle('on',mq&&deviceOnline&&rsOnline);
-  $('mqttChip').textContent=mq?'MQTT 연결':'MQTT 대기';$('mqttChip').classList.toggle('good',mq);
-  $('devChip').textContent=deviceOnline?'D1 mini ONLINE':'D1 mini OFFLINE';$('devChip').classList.toggle('good',deviceOnline);
-  $('rsChip').textContent=rsOnline?'RS485 ONLINE':'RS485 OFFLINE';$('rsChip').classList.toggle('good',rsOnline);
-  $('deviceText').textContent=deviceOnline?(rsOnline?'D1 mini · BESTIN RS485 정상':'D1 mini · RS485 확인 필요'):'D1 mini 상태 확인 전';
+
+  $('mqttChip').textContent=mq?'MQTT 연결':'MQTT 대기';
+  $('mqttChip').classList.toggle('good',mq);
+
+  $('devChip').textContent=deviceOnline?'D1 mini ONLINE':'D1 mini OFFLINE';
+  $('devChip').classList.toggle('good',deviceOnline);
+
+  $('rsChip').textContent=rsOnline?'RS485 ONLINE':'RS485 OFFLINE';
+  $('rsChip').classList.toggle('good',rsOnline);
 }
 
 function optimistic(i,state,ms=2600){
-  states[i]=state;known[i]=true;pendingDesired[i]=state;pendingUntil[i]=Date.now()+ms;
-  if(!scheduleUiBusy()) renderDevices();
+  states[i]=state;
+  known[i]=true;
+  pendingDesired[i]=state;
+  pendingUntil[i]=Date.now()+ms;
+  renderDevices();
 }
+
 function acceptActual(i,state){
-  if(Date.now()<pendingUntil[i]&&pendingDesired[i]===state){pendingDesired[i]=null;pendingUntil[i]=0}
-  states[i]=state;known[i]=true;
-  if(!scheduleUiBusy()) renderDevices();
+  if(Date.now()<pendingUntil[i] && pendingDesired[i]===state){
+    pendingDesired[i]=null;
+    pendingUntil[i]=0;
+  }
+
+  states[i]=state;
+  known[i]=true;
+  renderDevices();
 }
 
 function start(pw,save){
-  if(!pw){toast('비밀번호를 입력하세요');return}
-  if(client)try{client.end(true)}catch(e){}
+  if(!pw){
+    toast('비밀번호를 입력하세요');
+    return;
+  }
+
+  if(client){
+    try{client.end(true)}catch(e){}
+  }
+
   $('conn').textContent='HiveMQ Cloud 연결 중...';
-  client=mqtt.connect(`wss://${HOST}:${PORT}/mqtt`,{username:USER,password:pw,clientId:'ConyWeb-'+Math.random().toString(16).slice(2),clean:true,connectTimeout:10000,reconnectPeriod:3000});
+
+  client=mqtt.connect(
+    `wss://${HOST}:${PORT}/mqtt`,
+    {
+      username:USER,
+      password:pw,
+      clientId:'ConyWeb-'+Math.random().toString(16).slice(2),
+      clean:true,
+      connectTimeout:10000,
+      reconnectPeriod:3000
+    }
+  );
+
   client.on('connect',()=>{
     $('conn').textContent='HiveMQ Cloud 연결됨';
     $('login').style.display='none';
-    if(save)try{localStorage.setItem(KEY,pw)}catch(e){}
+
+    if(save){
+      try{localStorage.setItem(KEY,pw)}catch(e){}
+    }
+
     client.subscribe('conyhome/circuit/+/state');
     client.subscribe('conyhome/device/status');
     client.subscribe('conyhome/rs485/status');
     client.subscribe('conyhome/schedule/circuit/+/state');
     client.subscribe('conyhome/schedule/lights/state');
+
     ui();
   });
-  client.on('reconnect',()=>{$('conn').textContent='HiveMQ 재연결 중...';ui()});
+
+  client.on('reconnect',()=>{
+    $('conn').textContent='HiveMQ 재연결 중...';
+    ui();
+  });
+
   client.on('close',ui);
-  client.on('error',()=>{$('conn').textContent='HiveMQ 연결 실패';ui()});
+
+  client.on('error',()=>{
+    $('conn').textContent='HiveMQ 연결 실패';
+    ui();
+  });
+
   client.on('message',(topic,payload)=>{
-    const msg=payload.toString().trim(),up=msg.toUpperCase();
-    if(topic==='conyhome/device/status'){deviceOnline=up==='ONLINE';ui();return}
-    if(topic==='conyhome/rs485/status'){rsOnline=up==='ONLINE';ui();return}
+    const msg=payload.toString().trim();
+    const up=msg.toUpperCase();
+
+    if(topic==='conyhome/device/status'){
+      deviceOnline=up==='ONLINE';
+      ui();
+      return;
+    }
+
+    if(topic==='conyhome/rs485/status'){
+      rsOnline=up==='ONLINE';
+      ui();
+      return;
+    }
+
     if(topic==='conyhome/schedule/lights/state'){
       const s=parseSchedulePayload(msg);
-      if(s){globalSchedule=s;if(!scheduleUiBusy())renderGlobal()}
-      return
+      if(s)globalSchedule=s;
+      return;
     }
+
     let m=topic.match(/^conyhome\/schedule\/circuit\/(\d\d)\/state$/);
+
     if(m){
-      const i=parseInt(m[1],10)-1,s=parseSchedulePayload(msg);
-      if(i>=0&&i<9&&s){schedules[i]=s;if(!scheduleUiBusy())renderDevices()}
-      return
+      const i=parseInt(m[1],10)-1;
+      const s=parseSchedulePayload(msg);
+
+      if(i>=0&&i<9&&s){
+        schedules[i]=s;
+      }
+      return;
     }
+
     m=topic.match(/^conyhome\/circuit\/(\d\d)\/state$/);
-    if(m){const i=parseInt(m[1],10)-1;if(i>=0&&i<11){if(up==='UNKNOWN'){known[i]=false;renderDevices()}else acceptActual(i,up==='ON')}return}
+
+    if(m){
+      const i=parseInt(m[1],10)-1;
+
+      if(i>=0&&i<11){
+        if(up==='UNKNOWN'){
+          known[i]=false;
+          renderDevices();
+        }else{
+          acceptActual(i,up==='ON');
+        }
+      }
+    }
   });
 }
 
 function connectCloud(auto=false){
   let pw='';
+
   if(auto){
     try{pw=localStorage.getItem(KEY)||''}catch(e){}
-    if(!pw){$('conn').textContent='MQTT 비밀번호 입력 필요';$('login').style.display='block';return}
+
+    if(!pw){
+      $('conn').textContent='MQTT 비밀번호 입력 필요';
+      $('login').style.display='block';
+      return;
+    }
+
     start(pw,false);
-  }else start($('pw').value,true);
+  }else{
+    start($('pw').value,true);
+  }
 }
 
 function resetSavedPassword(){
   try{localStorage.removeItem(KEY)}catch(e){}
-  if(client)try{client.end(true)}catch(e){}
-  client=null;deviceOnline=false;rsOnline=false;
-  $('login').style.display='block';$('pw').value='';$('conn').textContent='HiveMQ 연결 안 됨';ui();
+
+  if(client){
+    try{client.end(true)}catch(e){}
+  }
+
+  client=null;
+  deviceOnline=false;
+  rsOnline=false;
+
+  $('login').style.display='block';
+  $('pw').value='';
+  $('conn').textContent='HiveMQ 연결 안 됨';
+
+  ui();
 }
 
 function toggle(i){
-  if(!client||!client.connected||!deviceOnline){toast('D1 mini 연결을 확인하세요');return}
+  if(!client||!client.connected||!deviceOnline){
+    toast('D1 mini 연결을 확인하세요');
+    return;
+  }
+
   const target=!(known[i]&&states[i]);
+
   optimistic(i,target);
-  client.publish(`conyhome/circuit/${String(i+1).padStart(2,'0')}/set`,target?'ON':'OFF',{qos:0,retain:false});
+
+  client.publish(
+    `conyhome/circuit/${String(i+1).padStart(2,'0')}/set`,
+    target?'ON':'OFF',
+    {qos:0,retain:false}
+  );
 }
 
 function groupSet(s){
-  if(!client||!client.connected||!deviceOnline){toast('D1 mini 연결을 확인하세요');return}
+  if(!client||!client.connected||!deviceOnline){
+    toast('D1 mini 연결을 확인하세요');
+    return;
+  }
+
   const state=s==='ON';
-  for(let i=0;i<9;i++)optimistic(i,state,4500);
-  client.publish('conyhome/group/lights/set',s,{qos:0,retain:false});
+
+  for(let i=0;i<9;i++){
+    optimistic(i,state,4500);
+  }
+
+  client.publish(
+    'conyhome/group/lights/set',
+    s,
+    {qos:0,retain:false}
+  );
+
   toast(state?'조명 전체 켜기':'조명 전체 끄기');
 }
 
-function saveIndividual(id){
-  if(!client||!client.connected||!deviceOnline){toast('D1 mini 연결을 확인하세요');return}
-  const i=id-1,s=readSchedule('c'+id);schedules[i]=s;renderDevices();
-  client.publish(`conyhome/schedule/circuit/${String(id).padStart(2,'0')}/set`,schedulePayload(s),{qos:0,retain:false});
-  toast('개별 예약 저장');
+function fillSheet(s){
+  $('schOnE').checked=s.onEnabled;
+  $('schOnT').value=hhmm(s.onHour,s.onMinute);
+
+  $('schOffE').checked=s.offEnabled;
+  $('schOffT').value=hhmm(s.offHour,s.offMinute);
 }
 
-function saveGlobal(){
-  if(!client||!client.connected||!deviceOnline){toast('D1 mini 연결을 확인하세요');return}
-  globalSchedule=readSchedule('g');renderGlobal();
-  client.publish('conyhome/schedule/lights/set',schedulePayload(globalSchedule),{qos:0,retain:false});
-  toast('전체 조명 예약 저장');
+function openGlobalSchedule(){
+  scheduleTarget='global';
+  $('sheetTitle').textContent='전체 조명 예약';
+  $('sheetHint').textContent='조명 9회로에 매일 적용됩니다.';
+  fillSheet(globalSchedule);
+  $('sheetBackdrop').classList.add('show');
 }
 
-renderGlobal();renderDevices();ui();window.addEventListener('load',()=>connectCloud(true));
+function openCircuitSchedule(i){
+  scheduleTarget=i;
+  $('sheetTitle').textContent=`${defs[i][0]} ${defs[i][1]} 예약`;
+  $('sheetHint').textContent='이 조명에만 매일 적용됩니다.';
+  fillSheet(schedules[i]);
+  $('sheetBackdrop').classList.add('show');
+}
+
+function closeSchedule(){
+  $('sheetBackdrop').classList.remove('show');
+}
+
+function backdropClose(e){
+  if(e.target===$('sheetBackdrop')){
+    closeSchedule();
+  }
+}
+
+function readSheet(){
+  const on=$('schOnT').value.split(':').map(Number);
+  const off=$('schOffT').value.split(':').map(Number);
+
+  return {
+    onEnabled:$('schOnE').checked,
+    onHour:on[0],
+    onMinute:on[1],
+    offEnabled:$('schOffE').checked,
+    offHour:off[0],
+    offMinute:off[1]
+  };
+}
+
+function saveSchedule(){
+  if(!client||!client.connected||!deviceOnline){
+    toast('D1 mini 연결을 확인하세요');
+    return;
+  }
+
+  const s=readSheet();
+
+  if(scheduleTarget==='global'){
+    globalSchedule=s;
+
+    client.publish(
+      'conyhome/schedule/lights/set',
+      schedulePayload(s),
+      {qos:0,retain:false}
+    );
+
+    toast('전체 조명 예약 저장');
+  }else{
+    const i=scheduleTarget;
+    schedules[i]=s;
+
+    client.publish(
+      `conyhome/schedule/circuit/${String(i+1).padStart(2,'0')}/set`,
+      schedulePayload(s),
+      {qos:0,retain:false}
+    );
+
+    toast('개별 예약 저장');
+  }
+
+  closeSchedule();
+}
+
+renderDevices();
+ui();
+
+window.addEventListener('load',()=>connectCloud(true));
+
 setInterval(()=>{
   let changed=false;
+
   for(let i=0;i<11;i++){
     if(pendingUntil[i]&&Date.now()>=pendingUntil[i]){
       pendingUntil[i]=0;
@@ -270,7 +596,10 @@ setInterval(()=>{
       changed=true;
     }
   }
-  if(changed && !scheduleUiBusy()) renderDevices();
+
+  if(changed){
+    renderDevices();
+  }
 },500);
 </script>
 </body>
