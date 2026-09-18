@@ -351,6 +351,12 @@ function resetSavedPassword(){
 
 function toggle(i){
   if(!client||!client.connected||!deviceOnline){toast('D1 mini 연결을 확인하세요');return}
+
+  if(Date.now()<pendingUntil[i]){
+    toast('상태 확인 중');
+    return;
+  }
+
   const target=!(known[i]&&states[i]);
   optimistic(i,target);
   client.publish(`conyhome/circuit/${String(i+1).padStart(2,'0')}/set`,target?'ON':'OFF',{qos:0,retain:false});
