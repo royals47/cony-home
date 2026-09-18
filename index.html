@@ -16,45 +16,53 @@ html,body{margin:0;min-height:100%;background:
   radial-gradient(circle at 80% -10%,rgba(85,120,210,.18),transparent 34%),
   radial-gradient(circle at -10% 30%,rgba(255,196,64,.07),transparent 30%),
   var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif}
-.wrap{max-width:720px;margin:auto;padding:28px 14px 65px}
-.hero{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
-.brand{font-size:37px;font-weight:900;letter-spacing:-1.7px;line-height:1}
-.subtitle{margin-top:9px;color:var(--muted);font-size:15px}
-.badge{padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.025);color:#b9c4d4;font-size:10px;font-weight:800}
-.card{background:linear-gradient(145deg,rgba(23,33,49,.96),rgba(16,23,35,.96));border:1px solid var(--line);border-radius:25px;box-shadow:0 14px 40px rgba(0,0,0,.18)}
-.status{margin-top:24px;padding:19px}
-.statusTop{display:flex;align-items:center;gap:11px}
-.dot{width:11px;height:11px;border-radius:50%;background:#637084}.dot.on{background:var(--green);box-shadow:0 0 14px rgba(53,215,134,.7)}
-.statusTitle{font-size:18px;font-weight:850}.deviceText{margin:8px 0 0 22px;color:var(--muted);font-size:12px}
-.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:15px;padding-top:14px;border-top:1px solid rgba(255,255,255,.06)}
-.chip{padding:6px 9px;border-radius:999px;background:#202a39;color:#aab5c6;font-size:10px;font-weight:700}.chip.good{background:rgba(53,215,134,.11);color:#a7efc8}
-.login{margin-top:14px;padding:16px}.login input{width:100%;background:#0c121c;color:#fff;border:1px solid #314057;border-radius:13px;padding:13px;font-size:15px}.login button{width:100%;margin-top:9px;border:0;border-radius:13px;padding:13px;font-weight:850}
-.reset{text-align:right;margin:7px 3px}.reset button{border:0;background:transparent;color:#778397;font-size:10px}
-.quick{margin-top:14px;padding:15px}.quickTitle{font-size:11px;color:var(--muted);margin:0 0 10px 2px;font-weight:750}
-.quickGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.btn{border:0;border-radius:17px;padding:16px 10px;font-size:16px;font-weight:900}.btnOn{background:linear-gradient(135deg,var(--yellow),var(--yellow2));color:#151719}.btnOff{background:#2a3546;color:#fff}
-.globalSchedule{margin-top:14px;padding:18px}.headTitle{display:flex;gap:10px;align-items:center;font-size:17px;font-weight:850}.iconBox{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:rgba(255,215,90,.1)}
-.desc{margin-top:5px;color:var(--muted);font-size:11px}
-.scheduleGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}.scheduleRow{padding:11px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.055);border-radius:15px}
-.schTop{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.schLabel{font-size:12px;font-weight:800}.checkWrap{display:flex;align-items:center;gap:5px;color:var(--muted);font-size:10px}
-input[type=checkbox]{width:18px;height:18px;accent-color:var(--yellow)}input[type=time]{width:100%;background:#0c121c;color:#fff;border:1px solid #314057;border-radius:11px;padding:10px;font-size:14px;color-scheme:dark}
-.saveBtn{width:100%;margin-top:10px;border:1px solid #35445b;background:#202b3c;color:#eef3fb;border-radius:13px;padding:11px;font-weight:800}
-.section{margin-top:27px}.sectionTitle{display:flex;justify-content:space-between;align-items:end;margin:0 3px 10px}.sectionTitle strong{font-size:20px}.sectionTitle span{font-size:10px;color:#758196}
-.roomHeader{margin-top:22px;padding:0 3px;color:#b8c2d1;font-size:12px;font-weight:850}
-.device{padding:17px;margin-top:9px}.device.on{border-color:rgba(255,215,90,.36);background:linear-gradient(145deg,rgba(34,34,28,.96),rgba(18,25,36,.96))}
-.deviceRow{display:flex;justify-content:space-between;align-items:center;gap:12px}.left{display:flex;align-items:center;gap:12px}.dicon{width:39px;height:39px;border-radius:13px;display:grid;place-items:center;background:#202b3b;font-size:19px}
-.name{font-size:18px;font-weight:850}.meta{margin-top:4px;color:var(--muted);font-size:10px}.stateWrap{display:flex;align-items:center;gap:7px}.st{font-size:10px;font-weight:850;color:#7e8a9c;min-width:26px;text-align:right}.device.on .st{color:#ffe99a}
-.sw{width:56px;height:33px;border-radius:22px;background:#2b3648;position:relative}.knob{position:absolute;width:25px;height:25px;left:4px;top:4px;border-radius:50%;background:#fff;transition:.16s}.device.on .sw{background:linear-gradient(135deg,var(--yellow),var(--yellow2))}.device.on .knob{left:27px;background:#14171c}
+.wrap{max-width:680px;margin:auto;padding:18px 10px 48px}
+.hero{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.brand{font-size:31px;font-weight:900;letter-spacing:-1.4px;line-height:1}
+.subtitle{margin-top:6px;color:var(--muted);font-size:13px}
+.badge{padding:6px 8px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.025);color:#b9c4d4;font-size:9px;font-weight:800}
+.card{background:linear-gradient(145deg,rgba(23,33,49,.96),rgba(16,23,35,.96));border:1px solid var(--line);border-radius:20px;box-shadow:0 10px 28px rgba(0,0,0,.15)}
+.status{margin-top:16px;padding:14px 15px}
+.statusTop{display:flex;align-items:center;gap:9px}
+.dot{width:9px;height:9px;border-radius:50%;background:#637084}.dot.on{background:var(--green);box-shadow:0 0 11px rgba(53,215,134,.7)}
+.statusTitle{font-size:16px;font-weight:850}.deviceText{margin:5px 0 0 18px;color:var(--muted);font-size:10px}
+.chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px;padding-top:9px;border-top:1px solid rgba(255,255,255,.06)}
+.chip{padding:5px 7px;border-radius:999px;background:#202a39;color:#aab5c6;font-size:9px;font-weight:700}.chip.good{background:rgba(53,215,134,.11);color:#a7efc8}
+.login{margin-top:10px;padding:12px}.login input{width:100%;background:#0c121c;color:#fff;border:1px solid #314057;border-radius:11px;padding:10px;font-size:14px}.login button{width:100%;margin-top:7px;border:0;border-radius:11px;padding:10px;font-weight:850}
+.reset{text-align:right;margin:4px 2px}.reset button{border:0;background:transparent;color:#778397;font-size:9px;padding:4px}
+.quick{margin-top:10px;padding:11px}.quickTitle{font-size:10px;color:var(--muted);margin:0 0 7px 2px;font-weight:750}
+.quickGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.btn{border:0;border-radius:14px;padding:12px 8px;font-size:14px;font-weight:900}.btnOn{background:linear-gradient(135deg,var(--yellow),var(--yellow2));color:#151719}.btnOff{background:#2a3546;color:#fff}
+.globalSchedule{margin-top:10px;padding:0;overflow:hidden}.headTitle{display:flex;gap:8px;align-items:center;font-size:15px;font-weight:850}.iconBox{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:rgba(255,215,90,.1)}
+.globalSchedule>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 14px;cursor:pointer;list-style:none;border:0}
+.globalSchedule>summary::-webkit-details-marker{display:none}
+.globalSchedule>summary::before{content:none}
+.globalSchedule>summary::after{content:"▾";color:#8290a4;font-size:14px;transition:.18s}
+.globalSchedule[open]>summary::after{transform:rotate(180deg)}
+.globalSummaryText{min-width:0}
+.globalBody{padding:0 13px 13px}
+
+.desc{margin-top:3px;color:var(--muted);font-size:10px}
+.scheduleGrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}.scheduleRow{padding:9px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.055);border-radius:12px}
+.schTop{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.schLabel{font-size:11px;font-weight:800}.checkWrap{display:flex;align-items:center;gap:4px;color:var(--muted);font-size:9px}
+input[type=checkbox]{width:16px;height:16px;accent-color:var(--yellow)}input[type=time]{width:100%;background:#0c121c;color:#fff;border:1px solid #314057;border-radius:10px;padding:8px;font-size:13px;color-scheme:dark}
+.saveBtn{width:100%;margin-top:8px;border:1px solid #35445b;background:#202b3c;color:#eef3fb;border-radius:11px;padding:9px;font-size:12px;font-weight:800}
+.section{margin-top:18px}.sectionTitle{display:flex;justify-content:space-between;align-items:end;margin:0 3px 7px}.sectionTitle strong{font-size:18px}.sectionTitle span{font-size:9px;color:#758196}
+.roomHeader{margin-top:14px;padding:0 3px;color:#b8c2d1;font-size:11px;font-weight:850}
+.device{padding:11px 12px;margin-top:6px}.device.on{border-color:rgba(255,215,90,.36);background:linear-gradient(145deg,rgba(34,34,28,.96),rgba(18,25,36,.96))}
+.deviceRow{display:flex;justify-content:space-between;align-items:center;gap:10px}.left{display:flex;align-items:center;gap:9px}.dicon{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:#202b3b;font-size:16px}
+.name{font-size:15px;font-weight:850}.meta{margin-top:2px;color:var(--muted);font-size:9px}.stateWrap{display:flex;align-items:center;gap:6px}.st{font-size:9px;font-weight:850;color:#7e8a9c;min-width:23px;text-align:right}.device.on .st{color:#ffe99a}
+.sw{width:48px;height:28px;border-radius:19px;background:#2b3648;position:relative}.knob{position:absolute;width:20px;height:20px;left:4px;top:4px;border-radius:50%;background:#fff;transition:.16s}.device.on .sw{background:linear-gradient(135deg,var(--yellow),var(--yellow2))}.device.on .knob{left:24px;background:#14171c}
 .pending{opacity:.75}.pending .sw::after{content:"";position:absolute;inset:-4px;border:1px solid rgba(111,168,255,.6);border-radius:26px;animation:pulse 1s infinite}@keyframes pulse{50%{opacity:.2}}
-details{margin-top:12px;border-top:1px solid rgba(255,255,255,.055);padding-top:10px}summary{list-style:none;color:#94a0b2;font-size:11px;font-weight:750}summary::-webkit-details-marker{display:none}summary::before{content:"⏱ "}
-.note{margin-top:26px;color:#667287;font-size:10px;line-height:1.65;text-align:center}.footer{margin-top:27px;padding-top:16px;border-top:1px solid rgba(255,255,255,.05);color:#59667b;text-align:center;font-size:9px}
+details{margin-top:8px;border-top:1px solid rgba(255,255,255,.055);padding-top:7px}summary{list-style:none;color:#94a0b2;font-size:10px;font-weight:750;cursor:pointer}summary::-webkit-details-marker{display:none}summary::before{content:"⏱ "}
+.note{margin-top:18px;color:#667287;font-size:9px;line-height:1.55;text-align:center}.footer{margin-top:18px;padding-top:12px;border-top:1px solid rgba(255,255,255,.05);color:#59667b;text-align:center;font-size:8px}
 #toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#05080d;border:1px solid #263247;color:#fff;padding:10px 15px;border-radius:20px;opacity:0;pointer-events:none;transition:.18s;white-space:nowrap;z-index:20;font-size:12px}#toast.show{opacity:.96}
-@media(max-width:520px){.wrap{padding:24px 12px 60px}.brand{font-size:34px}.scheduleGrid{grid-template-columns:1fr}}
+@media(max-width:520px){.wrap{padding:16px 9px 44px}.brand{font-size:30px}.scheduleGrid{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="hero">
-    <div><div class="brand">Cony Home</div><div class="subtitle">Cloud Remote Control · 11 Circuits</div></div>
+    <div><div class="brand">Cony Home</div><div class="subtitle">Cloud Remote · 11 Circuits</div></div>
     <div class="badge">EXTERNAL</div>
   </div>
 
@@ -78,11 +86,14 @@ details{margin-top:12px;border-top:1px solid rgba(255,255,255,.055);padding-top:
     </div>
   </div>
 
-  <div class="card globalSchedule">
-    <div class="headTitle"><div class="iconBox">⏰</div>전체 조명 예약</div>
-    <div class="desc">9개 조명을 매일 같은 시간에 한 번에 켜고 끕니다.</div>
-    <div id="globalScheduleArea"></div>
-  </div>
+  <details class="card globalSchedule">
+    <summary>
+      <div class="headTitle"><div class="iconBox">⏰</div><div class="globalSummaryText"><div>전체 조명 예약</div><div class="desc">눌러서 예약시간 설정</div></div></div>
+    </summary>
+    <div class="globalBody">
+      <div id="globalScheduleArea"></div>
+    </div>
+  </details>
 
   <div class="section">
     <div class="sectionTitle"><strong>기기 제어</strong><span>실제 RS485 상태로 자동 보정</span></div>
@@ -140,7 +151,7 @@ function renderDevices(){
       let state=states[i],k=known[i];
       if(isPending&&pendingDesired[i]!==null){state=pendingDesired[i];k=true}
       const icon=defs[i][2]==='조명'?'💡':'🔌';
-      h+=`<div class="card device ${k&&state?'on':''} ${isPending?'pending':''}"><div class="deviceRow"><div class="left"><div class="dicon">${icon}</div><div><div class="name">${defs[i][1]}</div><div class="meta">Circuit ${String(id).padStart(2,'0')} · ${k?(state?'켜짐':'꺼짐'):'상태 확인 중'}</div></div></div><div class="stateWrap"><div class="st">${k?(state?'ON':'OFF'):'--'}</div><div class="sw" onclick="toggle(${i})"><div class="knob"></div></div></div></div>${i<9?`<details><summary>개별 예약</summary>${scheduleHtml('c'+id,schedules[i])}<button class="saveBtn" onclick="saveIndividual(${id})">이 조명 예약 저장</button></details>`:''}</div>`;
+      h+=`<div class="card device ${k&&state?'on':''} ${isPending?'pending':''}"><div class="deviceRow"><div class="left"><div class="dicon">${icon}</div><div><div class="name">${defs[i][1]}</div><div class="meta">Circuit ${String(id).padStart(2,'0')} · ${k?(state?'켜짐':'꺼짐'):'상태 확인 중'}</div></div></div><div class="stateWrap"><div class="st">${k?(state?'ON':'OFF'):'--'}</div><div class="sw" onclick="toggle(${i})"><div class="knob"></div></div></div></div>${i<9?`<details><summary>예약</summary>${scheduleHtml('c'+id,schedules[i])}<button class="saveBtn" onclick="saveIndividual(${id})">이 조명 예약 저장</button></details>`:''}</div>`;
     }
   }
   $('devices').innerHTML=h;
