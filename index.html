@@ -110,6 +110,17 @@ let globalSchedule={onEnabled:false,onHour:7,onMinute:0,offEnabled:false,offHour
 let pendingDesired=Array(11).fill(null),pendingUntil=Array(11).fill(0);
 let client=null,deviceOnline=false,rsOnline=false;
 
+// 예약 details/time picker를 열어둔 동안 재렌더링 금지
+function scheduleUiBusy(){
+  const openDetail=document.querySelector('details[open]');
+  const a=document.activeElement;
+  const editingInput=a && (
+    a.matches('input[type="time"]') ||
+    a.matches('input[type="checkbox"]')
+  );
+  return !!openDetail || !!editingInput;
+}
+
 const $=id=>document.getElementById(id);
 function toast(s){$('toast').textContent=s;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),1450)}
 function hhmm(h,m){return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')}
@@ -144,8 +155,15 @@ function ui(){
   $('deviceText').textContent=deviceOnline?(rsOnline?'D1 mini · BESTIN RS485 정상':'D1 mini · RS485 확인 필요'):'D1 mini 상태 확인 전';
 }
 
-function optimistic(i,state,ms=2600){states[i]=state;known[i]=true;pendingDesired[i]=state;pendingUntil[i]=Date.now()+ms;renderDevices()}
-function acceptActual(i,state){if(Date.now()<pendingUntil[i]&&pendingDesired[i]===state){pendingDesired[i]=null;pendingUntil[i]=0}states[i]=state;known[i]=true;renderDevices()}
+function optimistic(i,state,ms=2600){
+  states[i]=state;known[i]=true;pendingDesired[i]=state;pendingUntil[i]=Date.now()+ms;
+  if(!scheduleUiBusy()) renderDevices();
+}
+function acceptActual(i,state){
+  if(Date.now()<pendingUntil[i]&&pendingDesired[i]===state){pendingDesired[i]=null;pendingUntil[i]=0}
+  states[i]=state;known[i]=true;
+  if(!scheduleUiBusy()) renderDevices();
+}
 
 function start(pw,save){
   if(!pw){toast('비밀번호를 입력하세요');return}
@@ -170,9 +188,17 @@ function start(pw,save){
     const msg=payload.toString().trim(),up=msg.toUpperCase();
     if(topic==='conyhome/device/status'){deviceOnline=up==='ONLINE';ui();return}
     if(topic==='conyhome/rs485/status'){rsOnline=up==='ONLINE';ui();return}
-    if(topic==='conyhome/schedule/lights/state'){const s=parseSchedulePayload(msg);if(s){globalSchedule=s;renderGlobal()}return}
+    if(topic==='conyhome/schedule/lights/state'){
+      const s=parseSchedulePayload(msg);
+      if(s){globalSchedule=s;if(!scheduleUiBusy())renderGlobal()}
+      return
+    }
     let m=topic.match(/^conyhome\/schedule\/circuit\/(\d\d)\/state$/);
-    if(m){const i=parseInt(m[1],10)-1,s=parseSchedulePayload(msg);if(i>=0&&i<9&&s){schedules[i]=s;renderDevices()}return}
+    if(m){
+      const i=parseInt(m[1],10)-1,s=parseSchedulePayload(msg);
+      if(i>=0&&i<9&&s){schedules[i]=s;if(!scheduleUiBusy())renderDevices()}
+      return
+    }
     m=topic.match(/^conyhome\/circuit\/(\d\d)\/state$/);
     if(m){const i=parseInt(m[1],10)-1;if(i>=0&&i<11){if(up==='UNKNOWN'){known[i]=false;renderDevices()}else acceptActual(i,up==='ON')}return}
   });
@@ -224,7 +250,17 @@ function saveGlobal(){
 }
 
 renderGlobal();renderDevices();ui();window.addEventListener('load',()=>connectCloud(true));
-setInterval(()=>{for(let i=0;i<11;i++){if(pendingUntil[i]&&Date.now()>=pendingUntil[i]){pendingUntil[i]=0;pendingDesired[i]=null}}renderDevices()},500);
+setInterval(()=>{
+  let changed=false;
+  for(let i=0;i<11;i++){
+    if(pendingUntil[i]&&Date.now()>=pendingUntil[i]){
+      pendingUntil[i]=0;
+      pendingDesired[i]=null;
+      changed=true;
+    }
+  }
+  if(changed && !scheduleUiBusy()) renderDevices();
+},500);
 </script>
 </body>
 </html>
